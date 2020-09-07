@@ -1,937 +1,427 @@
-<?php                                                              
+<?php
 function valida_privilegios($id_secao)
-	{
-		/* Método para validação de permissão por área */
-		if(!in_array($_SESSION['privilegios']["area_".$id_secao.""],$_SESSION['privilegios']))
+{
+	/* Metodo para validacao de permissao por area */
+	if (!in_array($_SESSION['privilegios']["area_" . $id_secao . ""], $_SESSION['privilegios'])) header("Location: index.php?module=home&method=main");
+	else {
+		if ($_SESSION['privilegios']["area_" . $id_secao . ""]["ler"] == 0) {
 			header("Location: index.php?module=home&method=main");
-		else
-		{
-				if($_SESSION['privilegios']["area_".$id_secao.""]["ler"] == 0)
-				{
-					header("Location: index.php?module=home&method=main");
+		}
+		if ($_SESSION['privilegios']["area_" . $id_secao . ""]["escrever"] == 0) $_SESSION['botao_inserir'] = 0;
+		else $_SESSION['botao_inserir'] = 1;
+
+		if ($_SESSION['privilegios']["area_" . $id_secao . ""]["alterar"] == 0) $_SESSION['botao_alterar'] = 0;
+		else $_SESSION['botao_alterar'] = 1;
+
+		if ($_SESSION['privilegios']["area_" . $id_secao . ""]["excluir"] == 0) $_SESSION['botao_excluir'] = 0;
+		else $_SESSION['botao_excluir'] = 1;
+	}
+}
+
+function email($to, $subject, $message, $anexo = "")
+{
+	require_once('class.phpmailer.php');
+
+	$mail = new phpmailer();
+
+	$mail->Encoding      = "8bit";
+	$mail->CharSet       = "iso-8859-1";
+	$mail->Sender        = SENDER_EMAIL;
+	$mail->FromName = NOME_EMAIL;
+	$mail->Host          = HOST_EMAIL;
+	$mail->Helo          = "EHLO";
+	$mail->SMTPAuth      = AUTH_EMAIL;
+	$mail->Username      = USER_EMAIL;
+	$mail->Password      = SENHA_EMAIL;
+	$mail->Port          = PORT_EMAIL;
+	$mail->AddReplyTo(SENDER_EMAIL, NOME_EMAIL);
+	$mail->Mailer = "smtp";
+	$mail->IsHTML(true);
+	$mail->AddAddress($to);
+	$mail->Subject = $subject;
+	$mail->Body    = $message;
+
+	if ($anexo != "") $mail->AddAttachment($anexo);
+
+	if (!$mail->Send()) die("erro no envio!");
+}
+
+function blockrequest($param)
+{
+	/*
+				Retira todas as tags html da string;
+				Retira qualquer isntruÃ§Ã£o SQL da string
+			*/
+			
+								$str = strip_tags($param);
+
+	$p1 = str_replace("INSERT", " ", $str);
+	$p2 = str_replace("DELETE", " ", $p1);
+	$p3 = str_replace("UPDATE", " ", $p2);
+	$p4 = str_replace("TRUNCATE", " ", $p3);
+	$p5 = str_replace("DUMP", " ", $p4);
+	$p6 = str_replace("DROP", " ", $p5);
+
+	$p7 = str_replace("<", " ", $p6);
+	$p8 = str_replace(">", " ", $p7);
+	$p9 = str_replace("'", "/'", $p8);
+	$p10 = str_replace("id", "", $p9);
+	$p11 = str_replace("id", "", $p10);
+	$p12 = str_replace(" or ", "", $p11);
+	$p13 = str_replace(" and ", "", $p12);
+	$p14 = str_replace("<>", "", $p13);
+	$p15 = str_replace("> 0", "", $p14);
+	$p15 = str_replace("--", "", $p15);
+
+	$str = $p15;
+
+	return $str;
+}
+
+function dolog($acao)
+{
+	@session_start();
+	$db = new db();
+
+	$sql = "INSERT INTO log (id_usuario, acao, data) VALUES (" . $_SESSION['id'] . ", '" . $acao . "', NOW())";
+	$db->query($sql, __LINE__, __FILE__);
+	$db->next_record();
+}
+
+function get_lat($cidade, $pais)
+{
+	$cidade = str_replace(" ", "+", $cidade);
+	$pais = str_replace(" ", "+", $pais);
+
+	$json = $this->get_remote_data("https://nominatim.openstreetmap.org/search?q=" . $cidade . "&format=json");
+	$json = json_decode($json);
+	$json = $json[0];
+
+	$latitude = $json->lat;
+
+	return $latitude;
+}
+
+function get_lon($cidade, $pais)
+{
+	$cidade = str_replace(" ", "+", $cidade);
+	$pais = str_replace(" ", "+", $pais);
+
+	$json = $this->get_remote_data("https://nominatim.openstreetmap.org/search?q=" . $cidade . "&format=json");
+	$json = json_decode($json);
+	$json = $json[0];
+
+	$longitude = $json->lon;
+
+	return $longitude;
+}
+
+function url_get_contents($Url)
+{
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $Url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$output = curl_exec($ch);
+
+	curl_close($ch);
+	return $output;
+}
+
+function get_remote_data($url, $post_paramtrs = false, $curl_opts = [])
+{
+	$c = curl_init();
+	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+         //if parameters were passed to this function, then transform into POST method.. (if you need GET request, then simply change the passed URL)
+	if ($post_paramtrs) {
+		curl_setopt($c, CURLOPT_POST, TRUE);
+		curl_setopt($c, CURLOPT_POSTFIELDS, (is_array($post_paramtrs) ? http_build_query($post_paramtrs) : $post_paramtrs));
+	}
+	curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($c, CURLOPT_COOKIE, 'CookieName1=Value;');
+	$headers[] = "User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:76.0) Gecko/20100101 Firefox/76.0";
+	$headers[] = "Pragma: ";
+	$headers[] = "Cache-Control: max-age=0";
+	if (!empty($post_paramtrs) && !is_array($post_paramtrs) && is_object(json_decode($post_paramtrs))) {
+		$headers[] = 'Content-Type: application/json';
+		$headers[] = 'Content-Length: ' . strlen($post_paramtrs);
+	}
+	curl_setopt($c, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($c, CURLOPT_MAXREDIRS, 10); 
+         //if SAFE_MODE or OPEN_BASEDIR is set,then FollowLocation cant be used.. so...
+	$follow_allowed = (ini_get('open_basedir') || ini_get('safe_mode')) ? false : true;
+	if ($follow_allowed) {
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
+	}
+	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 9);
+	curl_setopt($c, CURLOPT_REFERER, $url);
+	curl_setopt($c, CURLOPT_TIMEOUT, 60);
+	curl_setopt($c, CURLOPT_AUTOREFERER, true);
+	curl_setopt($c, CURLOPT_ENCODING, '');
+	curl_setopt($c, CURLOPT_HEADER, !empty($extra['return_array']));
+         //set extra options if passed
+	if (!empty($curl_opts))
+	foreach ($curl_opts as $key => $value) curl_setopt($c, constant($key), $value);
+	$data = curl_exec($c);
+	if (!empty($extra['return_array'])) {
+		preg_match("/(.*?)\r\n\r\n((?!HTTP\/\d\.\d).*)/si", $data, $x);
+		preg_match_all('/(.*?): (.*?)\r\n/i', trim('head_line: ' . $x[1]), $headers_, PREG_SET_ORDER);
+		foreach ($headers_ as $each) {
+			$header[$each[1]] = $each[2];
+		}
+		$data = trim($x[2]);
+	}
+	$status = curl_getinfo($c);
+	curl_close($c);
+         // if redirected, then get that redirected page
+	if ($status['http_code'] == 301 || $status['http_code'] == 302) { 
+            //if we FOLLOWLOCATION was not allowed, then re-get REDIRECTED URL
+            //p.s. WE dont need "else", because if FOLLOWLOCATION was allowed, then we wouldnt have come to this place, because 301 could already auto-followed by curl  :)
+		if (!$follow_allowed) {
+               //if REDIRECT URL is found in HEADER
+			if (empty($redirURL)) {
+				if (!empty($status['redirect_url'])) {
+					$redirURL = $status['redirect_url'];
 				}
-				if($_SESSION['privilegios']["area_".$id_secao.""]["escrever"] == 0)
-					$_SESSION['botao_inserir'] = 0;
-				else
-				    $_SESSION['botao_inserir'] = 1;
-	
-				
-				if($_SESSION['privilegios']["area_".$id_secao.""]["alterar"] == 0)
-					$_SESSION['botao_alterar'] = 0;
-				else
-				    $_SESSION['botao_alterar'] = 1;
-
-
-				if($_SESSION['privilegios']["area_".$id_secao.""]["excluir"] == 0)
-					$_SESSION['botao_excluir'] = 0;
-				else
-				    $_SESSION['botao_excluir'] = 1;
-
-		}
-					
-	}
-
-	function split_querystring()
-	{
-		$arrayRequest = split("&" , $_SERVER["QUERY_STRING"]);
-		for ($i = 0 ; $i < count($arrayRequest) ; $i++)
-		{
-			$pos_igual = strpos($arrayRequest[$i] , "=");
-			$variavel = substr($arrayRequest[$i] , 0 , $pos_igual);
-			$valor = substr($arrayRequest[$i] , $pos_igual + 1, strlen($arrayRequest[$i]));
-			$_REQUEST[$variavel] = $valor;
-
-			echo "<br>(1)arg n ".$i." : ".$variavel." - ".$_REQUEST[$variavel];
-		}
-	}
-	
-	function encrypt($string)
-	{
-		//return $string;
-		//$string = mt_rand(100000, 999999).$string.mt_rand(100000, 999999);
-		$encoded_data = base64_encode($string);
-		return strrev($encoded_data);
-	}
-	function decrypt($string)
-	{
-		$decoded = base64_decode(strrev($string));
-		//$decoded = substr($decoded , 6 , strlen($decoded) - 12);
-		return $decoded;
-	}
-	function decrypt_querystring()
-	{
-
-		$_SERVER["QUERY_STRING"] = decrypt($_SERVER["QUERY_STRING"]);
-		$arrayRequest = split("&" , $_SERVER["QUERY_STRING"]);
-		for ($i = 0 ; $i < count($arrayRequest) ; $i++)
-		{
-			$pos_igual = strpos($arrayRequest[$i] , "=");
-			$variavel = substr($arrayRequest[$i] , 0 , $pos_igual);
-			$valor = substr($arrayRequest[$i] , $pos_igual + 1, strlen($arrayRequest[$i]));
-			$_REQUEST[$variavel] = $valor;
-
-			//echo "<br>(1)arg n ".$i." : ".$variavel." - ".$_REQUEST[$variavel];
-		}
-	}
-    function microtime_float()
-    {
-       list($usec, $sec) = explode(" ", microtime());
-       return ((float)$usec + (float)$sec);
-    }
-    function remove_string_symbols($str_orig)
-    {
-        $str_orig = preg_replace('/(ã|â|á|à|ä)/' , 'a' , $str_orig);
-        $str_orig = preg_replace('/(ê|é|è|ë)/' , 'e' , $str_orig);
-        $str_orig = preg_replace('/(î|í|ì|ï)/' , 'i' , $str_orig);
-        $str_orig = preg_replace('/(õ|ô|ó|ò|ö)/' , 'o' , $str_orig);
-        $str_orig = preg_replace('/(û|ú|ù|ü)/' , 'u' , $str_orig);
-
-        $str_orig = preg_replace('/(Ã|Â|Á|À|Ä)/' , 'A' , $str_orig);
-        $str_orig = preg_replace('/(Ê|É|È|Ë)/' , 'E' , $str_orig);
-        $str_orig = preg_replace('/(Î|Í|Ì|Ï)/' , 'I' , $str_orig);
-        $str_orig = preg_replace('/(Õ|Ô|Ó|Ò|Ö)/' , 'O' , $str_orig);
-        $str_orig = preg_replace('/(Û|Ú|Ù|Ü)/' , 'U' , $str_orig);
-
-		$str_orig = str_replace('ç' , 'c' , $str_orig);
- 		$str_orig = str_replace('Ç' , 'C' , $str_orig);
- 		$str_orig = str_replace('.' , '' , $str_orig);
- 
-		$str_orig = preg_replace('/( |&|=|\+|-|>|<|\*|%|\$|#|@|!|"|~|¨)/' , '_' , $str_orig);
-        return $str_orig;
-    }
-    function get_data_clean($data)
-	{
-		$exp = explode(" ", $data);
-		$exp1 = explode("-", $exp[0]); 
-		$exp[1] = substr($exp[1], 0, 5);
-		$data = "$exp1[2]/$exp1[1]/$exp1[0] - $exp[1]";
-		return $data;
-	}
-    function get_data_clean_abrev($data)
-	{
-		$exp = explode(" ", $data);
-		$exp1 = explode("-", $exp[0]); 
-		$exp[1] = substr($exp[1], 0, 5);
-		$ano = substr($exp1[0] , 2 , 2);
-		$data = "$exp1[2]/$exp1[1]/$ano";
-		return $data;
-	}
-	function get_mes($mes)
-	{
-		$mes_array = array("01" => "Janeiro", "02" => "Fevereiro", "03" => "Março", "04" => "Abril",
-						   "05" => "Maio", "06" => "Junho", "07" => "Julho", "08" => "Agosto", 
-						   "09" => "Setembro", "10" => "Outubro", "11" => "Novembro", "12" => "Dezembro");	
-		return $mes_array[$mes];
-	}
-	function get_mes_abrev($mes)
-	{
-		$mes_array = array("01" => "Jan", "02" => "Fev", "03" => "Mar", "04" => "Abr",
-						   "05" => "Mai", "06" => "Jun", "07" => "Jul", "08" => "Ago", 
-						   "09" => "Set", "10" => "Out", "11" => "Nov", "12" => "Dez");	
-		return $mes_array[$mes];
-	}
-	
-	if (function_exists(strtolower2))
-	{
-	}else{
-		function strtolower2($value) 
-	{
-		return (strtolower(strtr( $value, UC_CHARS, LC_CHARS )));
-	}	
-	}
-	if(function_exists(get_data)){
-	} else {
-	    function get_data($data)
-		{
-			$exp = explode(" ", $data);
-			$exp1 = explode("-", $exp[0]); 
-			$exp[1] = substr($exp[1], 0, 5);
-			$data = "[$exp1[2]/$exp1[1]/$exp1[0] - $exp[1]]";
-			return $data;
-		}
-	}
-	
-	if (function_exists(pluralize))
-	{
-	}else{
-		function pluralize($busca)
-		{
-			$palavras = array();
-		  
-			$strx = explode(" ", $busca);
-		  
-			reset($strx);
-			while (list($key, $val) = each($strx))
-			{
-				// adiciona a propria palavra
-				$palavras[] = trim($val);
-				
-				// troca ões por ão
-				if (ereg("ões$", $val) )
-					$palavras[] = ereg_replace("ões$", "ão", $val);
-					
-				// troca ões por ãos
-				if (ereg("ões$", $val) )
-					$palavras[] = ereg_replace("ões$", "ãos", $val);
-						
-				// troca ão por ões
-				if (ereg("ão$", $val) )
-					$palavras[] = ereg_replace("ão$", "ões", $val);
-					
-				// troca ão por ãos
-				if (ereg("ão$", $val) )
-					$palavras[] = ereg_replace("ão$", "ãos", $val);	
-				
-				// troca ão por ães
-				if (ereg("ão$", $val) )
-					$palavras[] = ereg_replace("ão$", "ães", $val);	
-				
-				// troca ãe por ães
-				if (ereg("ãe$", $val) )
-					$palavras[] = ereg_replace("ãe$", "ães", $val);
-				
-				// OS -> AS
-				if (ereg("os$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("os$", "as", $val);
-				
-				// AS -> OS
-				if (ereg("as$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("as$", "os", $val);	
-						
-				// OS -> O
-				if (ereg("os$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("os$", "o", $val);
-					
-				// OS -> A
-				if (ereg("os$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("os$", "a", $val);	
-						
-				// O -> OS
-				if (ereg("o$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("o$", "os", $val);
-				
-				// AS -> A
-				if (ereg("as$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("as$", "a", $val);
-				
-				// AS -> O
-				if (ereg("as$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("as$", "o", $val);		
-				
-				// A -> AS
-				if (ereg("a$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("a$", "as", $val);
-				
-				// I -> IS
-				if (ereg("i$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("i$", "is", $val);
-				
-				// IS -> IL
-				if (ereg("is$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("is$", "il", $val);
-				
-				// EL -> EIS (marcello)
-				if (ereg("el$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("el$", "eis", $val);			
-		
-				// AL -> AIS (marcello)
-				if (ereg("al$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("al$", "ais", $val);			
-		
-				// IL -> IS
-				if (ereg("il$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("il$", "is", $val);			
-		
-				// E -> ES
-				if (ereg("e$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("e$", "es", $val);
-					
-				// ES -> E
-				if (ereg("es$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("es$", "e", $val);		
-					
-				// U -> US
-				if (ereg("u$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("u$", "us", $val);
-				
-				// ÉU -> ÉIS
-				if (ereg("éu$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("éu$", "éis", $val);
-				
-				// EU -> EIS
-				if (ereg("eu$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("eu$", "eis", $val);		
-				
-				// EI -> EIS
-				if (ereg("ei$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("ei$", "eis", $val);
-						
-				// R -> RES
-				if (ereg("r$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("r$", "res", $val);
-					
-				// M -> NS
-				if (ereg("m$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("m$", "ns", $val);
-				
-				// NS -> M
-				if (ereg("ns$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("ns$", "m", $val);
-					
-				// O -> A
-				if (ereg("o$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("o$", "a", $val);
-					
-				// O -> AS
-				if (ereg("o$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("o$", "as", $val);	
-				
-				// A -> O
-				if (ereg("a$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("a$", "o", $val);
-					
-				// A -> OS
-				if (ereg("a$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("a$", "os", $val);
-				
-				// EL -> EIS
-				if (ereg("el$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("el$", "eis", $val);
-				
-				// ÉL -> ÉIS
-				if (ereg("él$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("él$", "éis", $val);
-				
-				// EI -> EIS
-				if (ereg("ei$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("ei$", "eis", $val);	
-					
-				// AL -> AIS
-				if (ereg("al$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("al$", "ais", $val);
-				
-				// RES -> AR
-				if (ereg("res$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("res$", "ar", $val);	
-					
-				// OR -> ORES
-				if (ereg("or$", $val) AND !ereg("ão$", $val) )
-					$palavras[] = ereg_replace("or$", "ores", $val);							
 			}
-		
-			$palavras = array_unique($palavras);
-			return $palavras;
+               //if REDIRECT URL is found in RESPONSE
+			if (empty($redirURL)) {
+				preg_match('/(Location:|URI:)(.*?)(\r|\n)/si', $data, $m);
+				if (!empty($m[2])) {
+					$redirURL = $m[2];
+				}
+			}
+               //if REDIRECT URL is found in OUTPUT
+			if (empty($redirURL)) {
+				preg_match('/moved\s\<a(.*?)href\=\"(.*?)\"(.*?)here\<\/a\>/si', $data, $m);
+				if (!empty($m[1])) {
+					$redirURL = $m[1];
+				}
+			}
+               //if URL found, then re-use this function again, for the found url
+			if (!empty($redirURL)) {
+				$t = debug_backtrace();
+				return call_user_func($t[0]["function"], trim($redirURL), $post_paramtrs);
+			}
 		}
 	}
+         // if not redirected,and nor "status 200" page, then error..
+	elseif ($status['http_code'] != 200) {
+		$data = "ERRORCODE22 with $url<br/><br/>Last status codes:" . json_encode($status) . "<br/><br/>Last data got:$data";
+	}
+         //URLS correction
+	$answer = (!empty($extra['return_array']) ? array('data' => $data, 'header' => $header, 'info' => $status) : $data);
+	return $answer;
+}
 
-
-	
-	
-	
-	
-	
-	
-
-	
-	
-	
-$mes_array = array("01" => "Janeiro", "02" => "Fevereiro", "03" => "Março", "04" => "Abril",
-				   "05" => "Maio", "06" => "Junho", "07" => "Julho", "08" => "Agosto", 
-				   "09" => "Setembro", "10" => "Outubro", "11" => "Novembro", "12" => "Dezembro");
-
-define( "UC_CHARS", "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖŒØŠÙÚÛÜÝŽÞ" ); // If you need more, add
-define( "LC_CHARS", "àáâãäåæçèéêëìíîïðñòóôõöœøšùúûüýžþ" ); // If you need more, add
-
-function zero_antes_old($string,$tamanho)
+function gets3files($refdms)
 {
-  if( strlen($string) < $tamanho ):
-	  $zeros = '';
-		for( $i=1;$i<=($tamanho - (strlen($string)));$i++ ):
-		  $zeros .= '0';
-		endfor;
-		return $zeros.$string; 
-	endif;
+	$arquivos = array();
+
+	$s3Client = S3Client::factory(array('key' => AWS_S3_KEY, 'secret' => AWS_S3_SECRET));
+
+	$response = $s3Client->listObjects(array('Bucket' => AWS_S3_BUCKET, 'MaxKeys' => 1000, 'Prefix' => 'navio/' . $refdms . "/"));
+	$files = $response->getPath('Contents');
+	$request_id = array();
+
+	unset($files[0]);
+
+	foreach ($files as $file) {
+		$filename = $file['Key'];
+		array_push($arquivos, $filename);
+	}
+
+	return $arquivos;
 }
 
-
-function zero_antes($string)
+function getJson($url)
 {
-  if($string < 10 )
-	$string = "0$string";
-	return $string;
+	$dmstoken = getDmsToken();
+
+	$username = "DWSYS";
+	$password = "dwsys@2020";
+	$token = "HJFpvTcWkq7QxnCc65BMYrMa";
+            
+           // $params = array('HTTP_DMSTOKEN' => base64_encode($token));
+
+	$header = array(
+		'Content-Type' => 'application/json',
+		'DMSTOKEN' => base64_encode($token),
+		'Authorization' => 'Baerer ' . $dmstoken
+	);
+	$response =  $this->request("GET", $url, $header);
+
+	return json_decode($response, true);
 }
-/*
-//funcao que corrige erro ao converter a letras para minusculas
-function strtolower2($value) {
-  return (
-   strtolower(
-     strtr( $value, UC_CHARS, LC_CHARS )
-   )
-  );
-}
-*/
-//funcao que corrige erro ao converter a letras para maiusculas
-	if (function_exists(strtoupper2))
-	{
-	}else{
-		function strtoupper2($value) {
-		  return (
-		   strtoupper(
-		     strtr( $value, LC_CHARS, UC_CHARS )
-		   )
-		  );
+
+      // method should be "GET", "PUT", etc..
+function request($method, $url, $header)
+{
+	$opts = array(
+		'http' => array(
+			'method' => $method,
+		),
+	);
+
+          // serialize the header if needed
+	if (!empty($header)) {
+		$header_str = '';
+		foreach ($header as $key => $value) {
+                 
+                // if($key != "0")
+			$header_str .= "$key: $value\r\n";
 		}
+		$header_str .= "\r\n";
+		$opts['http']['header'] = $header_str;
 	}
 
-function get_produto_area($id){
+	$context = stream_context_create($opts);
 
-	$qr = mysql_db_query("coad", "SELECT descricao FROM produtos_areas WHERE id = '$id'");
-	$rs = mysql_fetch_object($qr);
-	$area = $rs->descricao;
-	
-	return $area;
+	@$data = file_get_contents($url, false, $context);
+	/*         
+var_dump($data);
+$error = error_get_last();
+var_dump($error);
+die();
+         
+*/       // $data = $this->curl_get_contents($url);
+
+	return $data;
 }
 
-if (function_exists(protect))
+function curl_get_contents($url)
 {
+	$ch = curl_init();
 
-}else{
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_URL, $url);
 
-	function protect($string)
-	{ 
-    	return base64_encode(serialize($string));
-	} 
+	$data = curl_exec($ch);
+	curl_close($ch);
 
+	return $data;
 }
 
-
-if (function_exists(unprotect))
+function file_get_html()
 {
-
-}else{
-
-	function unprotect($string)
-	{ 
-    	return unserialize(base64_decode($string));
-	}
-
+	$dom = new simple_html_dom;
+	$args = func_get_args();
+	$dom->load(call_user_func_array('curl_get_contents', $args), true);
+	return $dom;
 }
 
-function generatePassword ($length = 8)
+function s3_upload_multiple($field_name, $index, $dir = "", $rotation = 0)
 {
+	require_once 'S3.php';
 
-  // start with a blank password
-  $password = "";
+	$clientS3 = S3Client::factory(
+		array(
+			'key'    => AWS_S3_KEY,
+			'secret' => AWS_S3_SECRET
+		)
+	);
+          
+          //$nomeArquivoRand = substr(md5(md5(time()).rand(6,9)),0,30);
 
-  // define possible characters
-  $possible = "0123456789bcdfghjkmnpqrstvwxyz"; 
-    
-  // set up a counter
-  $i = 0; 
-    
-  // add random characters to $password until $length is reached
-  while ($i < $length) { 
+	$tmpfile = $_FILES[$field_name]['tmp_name'][$index];
+	$file = str_replace(" ", "", $_FILES[$field_name]['name'][$index]);
 
-    // pick a random character from the possible ones
-    $char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
-        
-    // we don't want this character if it's already in the password
-    if (!strstr($password, $char)) { 
-      $password .= $char;
-      $i++;
-    }
+	if (defined('AWS_S3_URL')) {
+		$nomeArquivoOriginal = explode(".", $file);
+		$nomeArquivo = $nomeArquivoOriginal[0];
+		$extensao = $nomeArquivoOriginal[1];
 
-  }
+		$exists = $clientS3->doesObjectExist(AWS_S3_BUCKET, "documents/" . $dir . $file);
 
-  // done!
-  return $password;
+		if ($exists) $finalFileName = $nomeArquivo . "_" . time() . "." . $extensao;
+		else $finalFileName = $file;
+            
+            
+         //   $finalFileName = $nomeArquivoRand.".".$extensao;
 
-}
+		if ($rotation != 0) {
+			$source = imagecreatefromjpeg($_FILES[$field_name]['tmp_name'][$index]);
+			$rotate = imagerotate($source, ($rotation - 90), 0);
 
-if(function_exists(get_data)){
- 
- } else {
- 
- function get_data($data){
-  $exp = explode(" ", $data);
-  $exp1 = explode("-", $exp[0]); 
-  $exp[1] = substr($exp[1], 0, 5);
-  $data = "[$exp1[2]/$exp1[1]/$exp1[0] - $exp[1]]";
-  return $data;
- }
-}
+			$filename = tempnam(sys_get_temp_dir(), "foo");
+			imagejpeg($rotate, $filename);
 
-if(function_exists(get_data2)){
-
-} else {
-
-	function get_data2($data){
-		$exp = explode(" ", $data);
-		$exp1 = explode("-", $exp[0]);
-		$data = "$exp1[2]-$exp1[1]-$exp1[0]";
-		return $data;
-	}
-}
-
-if(function_exists(get_data3)){
-
-} else {
-
-	function get_data3($data){
-		$exp = explode(" ", $data);
-		$exp1 = explode("-", $exp[0]);
-		$data = "$exp1[2]/$exp1[1]/$exp1[0]";
-		return $data;
-	}
-}
-
-if(function_exists(get_data4)){
-
-} else {
-
-	function get_data4($data){
-		$exp = explode(" ", $data);
-		$exp1 = explode("-", $exp[0]);
-		$data = "$exp1[2]";
-		return $data;
-	}
-}
-
-if(function_exists(get_indice)){
-
-} else {
-
-	function get_indice($idc){
-		$qry	= mysql_query("SELECT descricao FROM lista_indices WHERE valor LIKE '$idc'");
-		$rs		= mysql_fetch_array($qry);
-		
-		$nome	= $rs[descricao];
-		
-		return $nome;
-	}
-}
-
-function get_grupo_noticia($noticia){
-
-	$query	= mysql_query("SELECT id_grupo FROM noticias_conteudo WHERE id_noticia = '$noticia'");
-	$rs		= mysql_fetch_object($query);
-	
-	$grupo	= $rs->id_grupo;
-	
-	return $grupo;
-	
-}
-
-if (function_exists(removeaccents))
-{
-
-}else{
-
-	function removeaccents($string)
-	{
-		return strtr(
-		strtr($string, 'ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ°', 'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy_'),
-		array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss', 'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
-	}
-}
-
-	if (function_exists(limpa_texto))
-	{
-	}else{
-		function limpa_texto($text){
-	    // normalize white space
-	      $text = eregi_replace("[[:space:]]+", " ", $text);
-	      $text = str_replace("> <",">\r\r<",$text);
-	         $text = str_replace("<br>","<br>\r",$text);
-	
-	
-	            // keep tags, strip attributes
-	         $text = ereg_replace("<p [^>]*BodyTextIndent[^>]*>([^\n|\n\015|\015\n]*)</p>","<p>\\1</p>",$text);
-	         $text = eregi_replace("<p [^>]*margin-left[^>]*>([^\n|\n\015|\015\n]*)</p>","<blockquote>\\1</blockquote>",$text);
-	         $text = str_replace("&nbsp;","",$text);
-	
-	            //clean up whatever is left inside <p> and <li>
-	          $text = eregi_replace("<p align=\"center\">","@",$text);
-	//        $text = eregi_replace("<p [^>]*>","<p>",$text);
-	         $text = eregi_replace("<li [^>]*>","<li>",$text);
-	
-	            // kill unwanted tags
-		     $text = eregi_replace("<SMALL>","",$text);
-		     $text = eregi_replace("<H1[^>]*>","@",$text);
-		     $text = eregi_replace("<H2[^>]*>","@",$text);
-		     $text = eregi_replace("<H3[^>]*>","@",$text);
-		     $text = eregi_replace("<H4[^>]*>","@",$text);
-	
-		     $text = eregi_replace("</SMALL>","",$text);
-		     $text = eregi_replace("</?H1[^>]*>","@",$text);
-		     $text = eregi_replace("</?H2[^>]*>","@",$text);
-		     $text = eregi_replace("</?H3[^>]*>","@",$text);
-		     $text = eregi_replace("</?H4[^>]*>","@",$text);
-		     $text = eregi_replace("</?span[^>]*>","",$text);
-	         $text = eregi_replace("</?body[^>]*>","",$text);
-	         $text = eregi_replace("</?div[^>]*>","",$text);
-	         $text = eregi_replace("<\![^>]*>","",$text);
-	         $text = eregi_replace("</?[a-z]\:[^>]*>","",$text);
-	
-	            // kill style and on mouse* tags 
-	         $text = eregi_replace("([ \f\r\t\n\'\"])style=[^>]+", "\\1", $text);
-	         $text = eregi_replace("([ \f\r\t\n\'\"])on[a-z]+=[^>]+", "\\1", $text);
-	
-	            //remove empty paragraphs
-	         $text = str_replace("<p></p>","",$text);
-	         
-	            //remove closing </html>
-	         $text = str_replace("</html>","",$text);
-	
-	            //clean up white space again
-	  $text = eregi_replace("[[:space:]]+", " ", $text);
-	    $text = str_replace("> <",">\r\r<",$text);
-	         $text = str_replace("<br>","<br>\r",$text);
-			 
-			 
-				$text = ereg_replace("<P>", "<P align=justify>", $text);
-				$text = ereg_replace("<p>", "<P align=justify>", $text);
-				$text = eregi_replace("@","<p align=\"center\">",$text);
-				$text = ereg_replace("<\/FONT>", " ", $text);
-				$text = ereg_replace("<FONT[^>]*>", " ", $text);
-				$text = ereg_replace("<\/font>", " ", $text);
-				$text = ereg_replace("<font[^>]*>", " ", $text);
-				$text = eregi_replace("<table ", "<table class=\"texto-link-tit\" ", $text);
-				$text = eregi_replace("<TABLE ", "<table class=\"texto-link-tit\" ", $text);
-				$text = eregi_replace("<br /> _", "@ _", $text);
-				$text = eregi_replace("_<br />", "_@", $text);
-				$text = eregi_replace("--<br />", "--@", $text);
-				$text = eregi_replace("\.<br />", ".@", $text);
-				$text = eregi_replace("\:<br />", ":@", $text);
-				$text = eregi_replace("\;<br />", ";@", $text);
-				
-				$text = eregi_replace("\) <br />", ")@", $text);
-				$text = eregi_replace("_ <br />", "_@", $text);
-				$text = eregi_replace("-- <br />", "--@", $text);
-				$text = eregi_replace("\. <br />", ".@", $text);
-				$text = eregi_replace("\: <br />", ":@", $text);
-				$text = eregi_replace("\; <br />", ";@", $text);
-	
-				$text = eregi_replace("\.<BR>", ".@", $text);
-				$text = eregi_replace("\:<BR>", ":@", $text);
-				$text = eregi_replace("\;<BR>", ";@", $text);
-	
-				$text = eregi_replace("\. <BR>", ".@", $text);
-				$text = eregi_replace("\: <BR>", ":@", $text);
-				$text = eregi_replace("\; <BR>", ";@", $text);
-	
-				$text = eregi_replace("<BR>", " ", $text);
-				$text = eregi_replace("<br />", " ", $text);
-				$text = eregi_replace("@", "<br /><br />", $text);
-	        	$text = eregi_replace("\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.", "", $text);
-	
-	$text = ereg_replace("WIDTH=\"+[[:alnum:]]+\"", "width=570", $text);
-	$text = ereg_replace("whidth=+[[:alnum:]]+", "width=570", $text);
-			
-			
-			return $text;
-		}
-	}
-
-	if (function_exists(limpa_texto_atc))
-	{
-	}else{
-		function limpa_texto_atc($text){
-	    // normalize white space
-	 //        $text = eregi_replace("[[:space:]]+", " ", $text);
-	 //        $text = str_replace("> <",">\r\r<",$text);
-	         $text = str_replace("<br>","<br>\r",$text);
-	
-	
-	            // keep tags, strip attributes
-	         $text = ereg_replace("<p [^>]*BodyTextIndent[^>]*>([^\n|\n\015|\015\n]*)</p>","<p>\\1</p>",$text);
-	         $text = eregi_replace("<p [^>]*margin-left[^>]*>([^\n|\n\015|\015\n]*)</p>","<blockquote>\\1</blockquote>",$text);
-	         $text = str_replace("&nbsp;","",$text);
-	
-	            //clean up whatever is left inside <p> and <li>
-	          $text = eregi_replace("<p align=\"center\">","@",$text);
-	//        $text = eregi_replace("<p [^>]*>","<p>",$text);
-	         $text = eregi_replace("<li [^>]*>","<li>",$text);
-	
-	            // kill unwanted tags
-		     $text = eregi_replace("<SMALL>","",$text);
-		     $text = eregi_replace("<H1[^>]*>","@",$text);
-		     $text = eregi_replace("<H2[^>]*>","@",$text);
-		     $text = eregi_replace("<H3[^>]*>","@",$text);
-		     $text = eregi_replace("<H4[^>]*>","@",$text);
-	
-		     $text = eregi_replace("</SMALL>","",$text);
-		     $text = eregi_replace("</?H1[^>]*>","@",$text);
-		     $text = eregi_replace("</?H2[^>]*>","@",$text);
-		     $text = eregi_replace("</?H3[^>]*>","@",$text);
-		     $text = eregi_replace("</?H4[^>]*>","@",$text);
-		     $text = eregi_replace("</?span[^>]*>","",$text);
-	         $text = eregi_replace("</?body[^>]*>","",$text);
-	         
-					 $text = eregi_replace("</?div[^>]*>","",$text);
-	         $text = eregi_replace("<\![^>]*>","",$text);
-	         $text = eregi_replace("</?[a-z]\:[^>]*>","",$text);
-	
-	            // kill style and on mouse* tags 
-	         $text = eregi_replace("([ \f\r\t\n\'\"])style=[^>]+", "\\1", $text);
-	         $text = eregi_replace("([ \f\r\t\n\'\"])on[a-z]+=[^>]+", "\\1", $text);
-	
-	            //remove empty paragraphs
-	         $text = str_replace("<p></p>","",$text);
-	         
-	            //remove closing </html>
-	         $text = str_replace("</html>","",$text);
-	
-	            //clean up white space again
-	 //        $text = eregi_replace("[[:space:]]+", " ", $text);
-	    //     $text = str_replace("> <",">\r\r<",$text);
-	         $text = str_replace("<br>","<br>\r",$text);
-	
-				$text = eregi_replace("@","<p align=\"center\">",$text);
-				$text = ereg_replace("<\/FONT>", " ", $text);
-				$text = ereg_replace("<FONT[^>]*>", " ", $text);
-				$text = ereg_replace("<\/font>", " ", $text);
-				$text = ereg_replace("<font[^>]*>", " ", $text);
-				$text = eregi_replace("<table ", "<table class=\"texto-link-tit\" ", $text);
-				$text = eregi_replace("<TABLE ", "<table class=\"texto-link-tit\" ", $text);
-				$text = eregi_replace("@", "<br /><br />", $text);
-	      //Isto foi retirado porque estava dando problema em um informativo ATC no
-				//qual esta função abaixo suprimia os pontilhados que neste caso deveriam ser
-				//visualizado
-			  //mcm 10/10/2005 - 16:50
-				//$text = eregi_replace("\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.", "", $text);
-	
-	$text = ereg_replace("WIDTH=\"+[[:alnum:]]+\"", "width=470", $text);
-	$text = ereg_replace("whidth=+[[:alnum:]]+", "width=470", $text);
-			$text = stripslashes($text);
-			
-			return $text;
-		}
-	}	
-	if (function_exists(troca_caracter_especial))
-	{
-	}else{
-		function troca_caracter_especial($var)
-{
-   $vetor_troca['Á']='á';
-   $vetor_troca['À']='à';
-   $vetor_troca['Â']='â';
-   $vetor_troca['Ã']='ã';
-   $vetor_troca['É']='é';
-   $vetor_troca['È']='è';
-   $vetor_troca['Ê']='ê';
-   $vetor_troca['Í']='í';
-   $vetor_troca['Ì']='ì';
-   $vetor_troca['Î']='î';
-   $vetor_troca['Ó']='ó';
-   $vetor_troca['Ò']='ò';   
-   $vetor_troca['Ô']='ô';
-   $vetor_troca['Õ']='õ';
-   $vetor_troca['Ú']='ú';
-   $vetor_troca['Ù']='ù';   
-   $vetor_troca['Û']='û';
-   $vetor_troca['Ç']='ç';
-
-   if( array_key_exists( $var,$vetor_troca ) ):
-     return($vetor_troca["$var"]);
-   else:
-     return($var);  
-   endif;         
-}
-	}
-	if (function_exists(limpa_texto))
-	{
-	}else{
-		function formata_nome($var)
-{
-   // Dá um lowercase() na variável toda
-   $var = strtolower($var);
-   $var2 = ''; 
-
-   for( $j=0;$j<strlen($var);$j++ ):
-     $var2 .= troca_caracter_especial($var[$j]);
-   endfor;
-
-   $var = $var2;
-   $tmp = explode(" ",$var);
-   $knome = "";
-
-   for($i=0;$i<count($tmp);$i++):
-     if (($tmp[$i]=='e') or ($tmp[$i] == "de") or ($tmp[$i] == "da") or ($tmp[$i] == "do") or ($tmp[$i] == "di") or ($tmp[$i] == "dos") or ($tmp[$i]=="ii") or ($tmp[$i]=="iii") or ($tmp[$i]=="vi") or ($tmp[$i]=="iv") or ($tmp[$i]=="ix") or ($tmp[$i]=="xx")):
-        $compara = strtoupper($tmp[$i]);
-
-        if (($compara=="II") or ($compara=="III") or ($compara=="VI") or ($compara=="IV") or ($compara=="IX") or ($compara=="XX")):
-           $knome_upper = strtoupper($tmp[$i]);
-           $knome .= " ".$knome_upper;
-        else:
-           $knome .= " ".$tmp[$i];
-        endif;
-     else:
-        $knome_upper = ucfirst($tmp[$i]);
-        $knome .= " ".$knome_upper;
-     endif;
-   endfor;
-
-   $knome = trim($knome);
-   return($knome);
-}
-	}
-	
-//Retornar por quantos vezes o valor em questão pode ser dividido levanto
-//em consideração o numero minimo de parcelas e o valor minimo de cada parcela
-function loja_nr_vezes( $vl_total,$vl_parcela_minima,$nr_parcela )
-{  	
-	$retorno = floor( $vl_total / $vl_parcela_minima );
-	if( $vl_total < ($vl_parcela_minima * 2 ) ):
-	  return 0;
-	endif;	
-	if( $retorno > $nr_parcela ):
-	  return $nr_parcela;
-	else:
-	  return $retorno;
-	endif;	
-}
-
-function troca_caracter_upper($var)
-{
-   $vetor_troca['á']='Á';
-   $vetor_troca['à']='À';
-   $vetor_troca['â']='Â';
-   $vetor_troca['ã']='Ã';
-   $vetor_troca['é']='É';
-   $vetor_troca['è']='È';
-   $vetor_troca['ê']='Ê';
-   $vetor_troca['í']='Í';
-   $vetor_troca['ì']='Ì';
-   $vetor_troca['î']='Î';
-   $vetor_troca['ó']='Ó';
-   $vetor_troca['ò']='Ò';   
-   $vetor_troca['ô']='Ô';
-   $vetor_troca['õ']='Õ';
-   $vetor_troca['ú']='Ú';
-   $vetor_troca['ù']='Ù';   
-   $vetor_troca['û']='Û';
-   $vetor_troca['ç']='Ç';
-
-   if( array_key_exists( $var,$vetor_troca ) ):
-     return $vetor_troca["$var"];
-   else:
-     return strtoupper($var);  
-   endif;         
-}
-
-function upper( $str )
-{
-  $str_retorno = '';
-	for( $i=0;$i<strlen($str);$i++ ):
-	  $str_retorno .= troca_caracter_upper($str[$i]);		
-	endfor;
-	return $str_retorno;
-}
-
-if (!function_exists(prepara_busca)){
-
-	function prepara_busca( $string ){
-	
-		$string = strtolower2(trim($string));
-		$string = ereg_replace(" nos ", " ", $string);
-		$string = ereg_replace(" nas ", " ", $string);
-		$string = ereg_replace(" dos ", " ", $string);
-		$string = ereg_replace(" das ", " ", $string);
-		$string = ereg_replace(" aos ", " ", $string);
-		$string = ereg_replace(" de ", " ", $string);
-		$string = ereg_replace(" da ", " ", $string);
-		$string = ereg_replace(" do ", " ", $string);
-		$string = ereg_replace(" com ", " ", $string);
-		$string = ereg_replace(" em ", " ", $string);
-		$string = ereg_replace(" e ", " ", $string);
-		$string = ereg_replace(" a ", " ", $string);
-		$string = ereg_replace(" o ", " ", $string);
-		$string = ereg_replace(" ou ", " ", $string);
-		$string = ereg_replace(" para ", " ", $string);
-		$string = ereg_replace(" por ", " ", $string);
-		$string = ereg_replace(" pela ", " ", $string);
-		$string = ereg_replace(" no ", " ", $string);
-		$string = ereg_replace(" na ", " ", $string);
-		$string = ereg_replace(" pelas ", " ", $string);
-		$string = ereg_replace("-", " ", $string);
-		$string = ereg_replace(" ", " ", $string);
-		$string = ereg_replace(" ", " ", $string);
-		$string = ereg_replace("\.", "", $string);
-		$string = ereg_replace("\,", "", $string);
-		$string = ereg_replace(" E ", " ", $string);
-		return $string;
-	}	
-}
-
-if (!function_exists(br_date)){
-
-	function br_date($data){
-	  
- 	 if( strlen($data) == 19 ):
-	  $tmp1 = explode(" ",$data);
-		$tmp = explode("-",$tmp1[0]);
-		$ano = $tmp[0];
-		$mes = $tmp[1];
-		$dia = $tmp[2];
-		return $dia.'/'.$mes.'/'.$ano.' '.$tmp1[1];
-	elseif( (strlen($data) == 10)&&($data != '0000-00-00') ):
-	  $tmp = explode("-",$data);
-		$ano = $tmp[0];
-		$mes = $tmp[1];
-		$dia = $tmp[2];
-		return $dia.'/'.$mes.'/'.$ano;
-	else:
-	  return '';		
-	endif;
-	}
-}
-	
-if (!function_exists(br_date2)){
-
-	function br_date2($data){
-	  
-	  if( strlen($data) == 19 ):
-		  $tmp1 = explode(" ",$data);
-			$tmp = explode("-",$tmp1[0]);
-			$ano = $tmp[0];
-			$ano = $ano[2].$ano[3];
-			$mes = $tmp[1];
-			$dia = $tmp[2];
-			return $dia.'/'.$mes.'/'.$ano.' '.$tmp1[1];
-		elseif( (strlen($data) == 10)&&($data != '0000-00-00') ):
-		  $tmp = explode("-",$data);
-			$ano = $tmp[0];
-			$ano = $ano[2].$ano[3];
-			$mes = $tmp[1];
-			$dia = $tmp[2];
-			return $dia.'/'.$mes.'/'.$ano;
-		else:
-		  return '';		
-		endif;
-	}
-}
-
-
-
-
-		function replace_accentos_por_normais($var)
-		{
-			$var = ereg_replace("[ÁÀÂÃ]","A",$var);
-			$var = ereg_replace("[áàâãª]","a",$var);
-			$var = ereg_replace("[ÉÈÊ]","E",$var);
-			$var = ereg_replace("[éèê]","e",$var);
-			$var = ereg_replace("[ÍÌÎ]","I",$var);
-			$var = ereg_replace("[íìÎ]","i",$var);
-			$var = ereg_replace("[ÓÒÔÕ]","O",$var);
-			$var = ereg_replace("[óòôõº]","o",$var);
-			$var = ereg_replace("[ÚÙÛ]","U",$var);
-			$var = ereg_replace("[úùû]","u",$var);
-			$var = str_replace("Ç","C",$var);
-			$var = str_replace("ç","c",$var);
-			return $var;
+			$response = $clientS3->putObject(
+				array(
+					'Bucket' => AWS_S3_BUCKET,
+					'Key'    => "documents/" . $dir . $finalFileName,
+					'SourceFile' => $filename,
+				)
+			);
+		} else {
+			$response = $clientS3->putObject(
+				array(
+					'Bucket' => AWS_S3_BUCKET,
+					'Key'    => "documents/" . $dir . $finalFileName,
+					'SourceFile' => $_FILES[$field_name]['tmp_name'][$index],
+				)
+			);
 		}
 
+		$s3_path = $response['ObjectURL'];
 
+		unlink($tmpfile);
+	}
+
+	return $s3_path;
+}
+
+function get_post_action($name)
+{
+	$params = func_get_args();
+
+	foreach ($params as $name) {
+		if (isset($_POST[$name])) {
+			return $name;
+		}
+	}
+}
+
+function s3_upload_dynamic($file_name, $file_patch, $dir = "")
+{
+	require_once 'S3.php';
+
+	$clientS3 = S3Client::factory(
+		array(
+			'key'    => AWS_S3_KEY,
+			'secret' => AWS_S3_SECRET
+		)
+	);
+         
+       //   $nomeArquivoRand = substr(md5(md5(time()).rand(6,9)),0,30);
+
+	if (defined('AWS_S3_URL')) {
+		$nomeArquivoOriginal = explode(".", $file_name);
+		$nomeArquivo = $nomeArquivoOriginal[0];
+		$extensao = $nomeArquivoOriginal[1];
+
+		$exists = $clientS3->doesObjectExist(AWS_S3_BUCKET, "documents/" . $dir . $file_name);
+
+		if ($exists) $finalFileName = $nomeArquivo . "_" . time() . "." . $extensao;
+		else $finalFileName = $file_name;
+               
+            
+           // $finalFileName = $nomeArquivoRand.".".$extensao;
+
+		$response = $clientS3->putObject(
+			array(
+				'Bucket' => AWS_S3_BUCKET,
+				'Key'    => "documents/" . $dir . $finalFileName,
+				'SourceFile' => $file_patch,
+			)
+		);
+
+		$s3_path = $response['ObjectURL'];
+	}
+
+	return $s3_path;
+}
 
 ?>

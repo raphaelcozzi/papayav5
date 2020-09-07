@@ -130,7 +130,7 @@ class cadastro extends home
 
 		$subject = "Confirme seu cadastro (beta) - ".TITULO_SISTEMA." ";
 	
-		$this->email($email, $subject, $msg);
+		email($email, $subject, $msg);
 	   
 	   header("Location: ".ABS_LINK."cadastro/confirm");
 		

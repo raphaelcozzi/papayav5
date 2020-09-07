@@ -10,6 +10,8 @@ require_once("modules/home.php");
                         
 			if($_SESSION['id'] != $_SESSION['boss'])
 			$this->valida_privilegios();
+         
+         $_SESSION['page_title'] = "Usuários";
 			
 			$db = new db();
 			$db1 = new db();
@@ -89,8 +91,10 @@ require_once("modules/home.php");
 
             if($_SESSION['id'] != $_SESSION['boss'])
                 $this->valida_privilegios();
+            
+          $_SESSION['page_title'] = "Usuários";  
 
-			$q = $this->blockrequest($_REQUEST['q']);
+			$q = blockrequest($_REQUEST['q']);
 
 			$sql = "SELECT
 					usuarios.id as id
@@ -164,8 +168,10 @@ require_once("modules/home.php");
 
 			if($_SESSION['id'] != $_SESSION['boss'])
           $this->valida_privilegios();
+         
+         $_SESSION['page_title'] = "Novo Usuário";
 
-			$grupo = $this->blockrequest($_REQUEST['grupo']);	
+			$grupo = blockrequest($_REQUEST['grupo']);	
          
          
                 
@@ -349,12 +355,12 @@ require_once("modules/home.php");
 		$db3 = new db();
 		$db4 = new db();
 	
-		$nome = $this->blockrequest($_REQUEST['nome']);
-		$email = $this->blockrequest($_REQUEST['email']);
-		$senha = $this->blockrequest($_REQUEST['senha']);
-		$telefone = $this->blockrequest($_REQUEST['telefone']);
+		$nome = blockrequest($_REQUEST['nome']);
+		$email = blockrequest($_REQUEST['email']);
+		$senha = blockrequest($_REQUEST['senha']);
+		$telefone = blockrequest($_REQUEST['telefone']);
 
-		$grupo = $this->blockrequest($_REQUEST['grupo']);	
+		$grupo = blockrequest($_REQUEST['grupo']);	
 
       
       
@@ -459,13 +465,13 @@ require_once("modules/home.php");
 			}
 
          
-         $id = $this->blockrequest($_REQUEST['id']);	
+         $id = blockrequest($_REQUEST['id']);	
 
          $sql = "INSERT INTO usuarios_grupos (id_grupo, id_usuario) VALUES (".$grupo.",".$id_usuario.") ";
          $db->query($sql,__LINE__,__FILE__);
          $db->next_record();
          
-         $this->dolog("Cadastrou o usuário: ".$nome);
+         dolog("Cadastrou o usuário: ".$nome);
 
          header("Location: index.php?module=usuarios&method=main&msg=Usuario cadastrado com sucesso!&tm=green&mt=air");   
 		
@@ -481,10 +487,11 @@ require_once("modules/home.php");
 			$db4 = new db();
 
 			if($_SESSION['id'] != $_SESSION['boss'])
-         $this->valida_privilegios();
+         valida_privilegios();
                         
+         $_SESSION['page_title'] = "Editar Usuário";
                         
-			$id = $this->blockrequest($_REQUEST['id']);	
+			$id = blockrequest($_REQUEST['id']);	
 			
 			if($_REQUEST['exception'] == "1")
 			{
@@ -664,14 +671,14 @@ require_once("modules/home.php");
 			if($_SESSION['id'] != $_SESSION['boss'])
          $this->valida_privilegios();
                         
-			$nome = $this->blockrequest($_REQUEST['nome']);	
-			$email = $this->blockrequest($_REQUEST['email']);	
-			$senha = $this->blockrequest($_REQUEST['senha']);	
-			$nome = $this->blockrequest($_REQUEST['nome']);	
-			$telefone = $this->blockrequest($_REQUEST['telefone']);	
-			$grupo = $this->blockrequest($_REQUEST['grupo']);	
+			$nome = blockrequest($_REQUEST['nome']);	
+			$email = blockrequest($_REQUEST['email']);	
+			$senha = blockrequest($_REQUEST['senha']);	
+			$nome = blockrequest($_REQUEST['nome']);	
+			$telefone = blockrequest($_REQUEST['telefone']);	
+			$grupo = blockrequest($_REQUEST['grupo']);	
 
-			$id = $this->blockrequest($_REQUEST['id']);	
+			$id = blockrequest($_REQUEST['id']);	
          
          $sql = "UPDATE usuarios_grupos SET id_grupo = ".$grupo." WHERE id_usuario = ".$id." " ;
 			$db->query($sql,__LINE__,__FILE__);
@@ -770,7 +777,7 @@ require_once("modules/home.php");
 			}
 
 
-                     $this->dolog("Editou o usuário: ".$nome);
+                     dolog("Editou o usuário: ".$nome);
 			
 			header("Location: index.php?module=usuarios&method=main&msg=Dados atualizados com sucesso!&tm=green&mt=air");	
 		}
@@ -783,7 +790,7 @@ require_once("modules/home.php");
 			if($_SESSION['id'] != $_SESSION['boss'])
                             $this->valida_privilegios();
                         
-                        $id = $this->blockrequest($_REQUEST['id']);	
+                        $id = blockrequest($_REQUEST['id']);	
                         
 			$sql = "SELECT email FROM usuarios WHERE id = ".$id." AND usuario_master = ".$_SESSION['boss']." ";
 			$db->query($sql,__LINE__,__FILE__);
@@ -803,7 +810,7 @@ require_once("modules/home.php");
 				$db->next_record();
 			}
                   
-                     $this->dolog("Excluiu o usuário: ".$emailUsuario);
+                     dolog("Excluiu o usuário: ".$emailUsuario);
 
 			header("Location: index.php?module=usuarios&method=main&msg=Usuario Excluido com sucesso!&tm=green&mt=air");	
 			
@@ -869,6 +876,8 @@ require_once("modules/home.php");
                         
 			if($_SESSION['id'] != $_SESSION['boss'])
 			$this->valida_privilegios();
+         
+         $_SESSION['page_title'] = "Grupos de Usuários";
 			
 			$db = new db();
 
@@ -919,9 +928,11 @@ require_once("modules/home.php");
 
 			if($_SESSION['id'] != $_SESSION['boss'])
          $this->valida_privilegios();
+         
+         $_SESSION['page_title'] = "Novo Grupo de Usuários";
                         
                         
-			$id = $this->blockrequest($_REQUEST['id']);	
+			$id = blockrequest($_REQUEST['id']);	
 
 		// LISTAGEM DE PERMISSIONAMENTO
 		// LISTAGEM DE PERMISSIONAMENTO
@@ -1035,7 +1046,7 @@ require_once("modules/home.php");
          $db = new db();
          $db4 = new db();
  
-         $nome = $this->blockrequest($_REQUEST['nome']);
+         $nome = blockrequest($_REQUEST['nome']);
 
          $sql = "INSERT INTO grupos (nome) VALUES ('".$nome."') ";
          $db->query($sql,__LINE__,__FILE__);
@@ -1091,7 +1102,7 @@ require_once("modules/home.php");
             $this->valida_privilegios();
          */
                         
-         $id = $this->blockrequest($_REQUEST['id']);	
+         $id = blockrequest($_REQUEST['id']);	
 
 			$sql = "DELETE FROM grupos WHERE id = ".$id." ";
 			$db->query($sql,__LINE__,__FILE__);
@@ -1118,8 +1129,10 @@ require_once("modules/home.php");
 
 			if($_SESSION['id'] != $_SESSION['boss'])
             $this->valida_privilegios();
+         
+         $_SESSION['page_title'] = "Editar Grupo de Usuários";
 
-			$id = $this->blockrequest($_REQUEST['id']);	
+			$id = blockrequest($_REQUEST['id']);	
          
 			$sql = "SELECT nome
 					FROM grupos
@@ -1223,9 +1236,9 @@ require_once("modules/home.php");
 			if($_SESSION['id'] != $_SESSION['boss'])
          $this->valida_privilegios();
                         
-			$nome = $this->blockrequest($_REQUEST['nome']);	
+			$nome = blockrequest($_REQUEST['nome']);	
 
-			$id = $this->blockrequest($_REQUEST['id']);	
+			$id = blockrequest($_REQUEST['id']);	
          
 
 			$sql = "UPDATE grupos

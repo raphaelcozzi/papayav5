@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 */
 /* CONFIGURAÇÕES DE BANCO DE DADOS */
 
-$baseUrl = "/dev/papaya/";
+$baseUrl = "/dev/papayav5/";
 
 $host = "localhost"; // servidor
 $user = "root"; // usuario
@@ -30,12 +30,12 @@ define('AWS_S3_URL', 'http://s3.'.AWS_S3_REGION.'.amazonaws.com/'.AWS_S3_BUCKET.
 
 /* CONFIGURAÇÕES DE EMAIL PADRÃO */
 
-define("USER_EMAIL","warehousesystem@dmslog.com"); // Email de autenticação
-define("SENHA_EMAIL","DMSlog@20"); // Senha do email
+define("USER_EMAIL","archasys@gmail.com"); // Email de autenticação
+define("SENHA_EMAIL","trinityn3o@"); // Senha do email
 define("HOST_EMAIL","ssl://smtp.gmail.com"); // Servidor de autenticação
 
-define("SENDER_EMAIL","warehouse.mia@dmslog.com"); // Remetente
-define("NOME_EMAIL","DMS Logistics"); // Nome do remetente
+define("SENDER_EMAIL","archasys@gmail.com"); // Remetente
+define("NOME_EMAIL","Global Soft Union"); // Nome do remetente
 define("PORT_EMAIL","465"); // Porta de autenticação
 define("AUTH_EMAIL",true); // Autenticação no envio (true ou false)
 

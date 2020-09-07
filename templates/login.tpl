@@ -1,154 +1,156 @@
 <!-- BEGIN login -->
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en">
-    <!--<![endif]-->
-    <!-- BEGIN HEAD -->
-
-    <head>
-        <meta charset="utf-8" />
-        <title>{TITULO_SISTEMA}</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="" name="description" />
-        <meta content="" name="author" />
-         <base href="{ABS_LINK}" />
-        <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
-        <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" /> </head>
-    <!-- END HEAD -->
-
-    <body class=" login">
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="index.php">
-                <img src="images/logo-big.png" alt="" /> </a>
-        </div>
-        <!-- END LOGO -->
-        <!-- BEGIN LOGIN -->
-        <div class="content">
-            <!-- BEGIN LOGIN FORM -->
-            <form class="login-form" action="index.php?module=login&method=logar" method="post" name="forms_cad" onSubmit="return(validaLogin())">
-                <h3 class="form-title font-green">Papaya</h3>
-                <div class="alert alert-danger display-{alertaDisplay}">
-                    <button class="close" data-close="alert"></button>
-                    <span> {msg_error}</span>
-                </div>
-                <div class="form-group">
-                    <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-                    <label class="control-label visible-ie8 visible-ie9">Login</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="login" value="{login_field}" /> </div>
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Password</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="senha" value="{senha_field}" /> </div>
-                    
-                  <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Station</label>
-                    <select name="departamento" id="departamento" style="width:100%; height:35px;" class="form-control">
-                       <option value="0" selected="selected">SELECIONE</option>
-                           {listagem_departamentos}
-                           </select>
-                  </div>
-                    
-                <div class="form-actions">
-                    <button type="submit" class="btn green uppercase">Login</button>
-                    <label class="rememberme check mt-checkbox mt-checkbox-outline">
-                        <input type="checkbox" name="remember" value="1" />{TX_LEMBRAR}
-                        <span></span>
-                    </label>
-                    <a href="javascript:;" id="forget-password" class="forget-password">{TX_ESQUECEU_SENHA}</a>
-                </div>
-                <!--<div class="login-options">
-                    <h4>{TX_ACESSE_USANDO}:</h4>
-                    <ul class="social-icons">
-                        <li>
-                            <a class="social-icon-color facebook" data-original-title="facebook" href="javascript:;"></a>
-                        </li>
-                        <li>
-                            <a class="social-icon-color twitter" data-original-title="Twitter" href="javascript:;"></a>
-                        </li>
-                        <li>
-                            <a class="social-icon-color googleplus" data-original-title="Goole Plus" href="javascript:;"></a>
-                        </li>
-                        <li>
-                            <a class="social-icon-color linkedin" data-original-title="Linkedin" href="javascript:;"></a>
-                        </li>
-                    </ul>
-                </div> -->
-                <!--<div class="create-account">
-                    <p>
-                        <a href="javascript:;" id="register-btn" class="uppercase">{TX_AINDA_NAO_POSSUO_CONTA}</a>
-                    </p>
-                </div>-->
-            </form>
-            <!-- END LOGIN FORM -->
-            <!-- BEGIN FORGOT PASSWORD FORM -->
-            <form class="forget-form" action="index.php?module=login&method=send_pass"  method="post">
-                <h3 class="font-green">{TX_ESQUECEU_SENHA}</h3>
-                <p> {TX_REDEFINIR_SENHA} </p>
-                <div class="form-group">
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" /> </div>
-                <div class="form-actions">
-                    <button type="button" id="back-btn" class="btn green btn-outline" onClick="javascript:history.back();">{TX_VOLTAR}</button>
-                    <button type="submit" class="btn btn-success uppercase pull-right">{BTN_SUBMIT}</button>
-                </div>
-            </form>
-            <!-- END FORGOT PASSWORD FORM -->
-            <!-- BEGIN REGISTRATION FORM -->
-            <form class="register-form" action="index.php?module=cadastro&method=insere" method="post">
-                <h3 class="font-green">{TX_CRIAR_NOVA_CONTA}</h3>
-                <p class="hint"> {TX_ENTRE_INFORMACOES}: </p>
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Nome Completo</label>
-                    <input class="form-control placeholder-no-fix" type="text" placeholder="Nome completo" name="nome" /> </div>
-                <div class="form-group">
-                    <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-                    <label class="control-label visible-ie8 visible-ie9">Email</label>
-                    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email" /> </div>
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Endere&ccedil;o</label>
-                    <input class="form-control placeholder-no-fix" type="text" placeholder="Endere&ccedil;o" name="endereco" />
-                   </div>
-
-			 <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Estado</label>                    
-            <select name="estado"  id="estados" class="form-control" >
-                {listagem_estado}
-            </select>          
+<!--[if IE 8]> 
+<html lang="en" class="ie8 no-js">
+   <![endif]-->
+   <!--[if IE 9]> 
+   <html lang="en" class="ie9 no-js">
+      <![endif]-->
+      <!--[if !IE]><!-->
+      <html lang="en">
+         <!--<![endif]-->
+         <!-- BEGIN HEAD -->
+         <head>
+            <meta charset="utf-8" />
+            <title>{TITULO_SISTEMA}</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta content="width=device-width, initial-scale=1" name="viewport" />
+            <meta content="" name="description" />
+            <meta content="" name="author" />
+            <base href="{ABS_LINK}" />
+            <!-- BEGIN GLOBAL MANDATORY STYLES -->
+            <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+            <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+            <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+            <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+            <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+            <!-- END GLOBAL MANDATORY STYLES -->
+            <!-- BEGIN PAGE LEVEL PLUGINS -->
+            <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+            <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+            <!-- END PAGE LEVEL PLUGINS -->
+            <!-- BEGIN THEME GLOBAL STYLES -->
+            <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+            <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+            <!-- END THEME GLOBAL STYLES -->
+            <!-- BEGIN PAGE LEVEL STYLES -->
+            <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+            <!-- END PAGE LEVEL STYLES -->
+            <!-- BEGIN THEME LAYOUT STYLES -->
+            <!-- END THEME LAYOUT STYLES -->
+            <link rel="shortcut icon" href="favicon.ico" />
+         </head>
+         <!-- END HEAD -->
+         <body class=" login">
+            <!-- BEGIN LOGO -->
+            <div class="logo">
+               <a href="index.php">
+               <img src="images/logo-big.png" alt="" /> </a>
             </div>
-
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Cidade</label>
-                    <!--<input class="form-control placeholder-no-fix" type="text" placeholder="City/Town" name="cidade" /> -->
-            <select id="cidades" name="cidade" class="form-control" >
-                {listagem_cidade}
-		    </select>
-                    </div>
-
-                    
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Pa&iacute;s</label>
-                    <select name="pais" class="form-control">
+            <!-- END LOGO -->
+            <!-- BEGIN LOGIN -->
+            <div class="content">
+               <!-- BEGIN LOGIN FORM -->
+               <form class="login-form" action="index.php?module=login&method=logar" method="post" name="forms_cad" onSubmit="return(validaLogin())">
+                  <h3 class="form-title font-green">Papaya</h3>
+                  <div class="alert alert-danger display-{alertaDisplay}">
+                     <button class="close" data-close="alert"></button>
+                     <span> {msg_error}</span>
+                  </div>
+                  <div class="form-group">
+                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                     <label class="control-label visible-ie8 visible-ie9">Login</label>
+                     <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="login" value="{login_field}" /> 
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Password</label>
+                     <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="senha" value="{senha_field}" /> 
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Station</label>
+                     <select name="departamento" id="departamento" style="width:100%; height:35px;" class="form-control">
+                        <option value="0" selected="selected">SELECIONE</option>
+                        {listagem_departamentos}
+                     </select>
+                  </div>
+                  <div class="form-actions">
+                     <button type="submit" class="btn green uppercase">Login</button>
+                     <label class="rememberme check mt-checkbox mt-checkbox-outline">
+                     <input type="checkbox" name="remember" value="1" />{TX_LEMBRAR}
+                     <span></span>
+                     </label>
+                     <a href="javascript:;" id="forget-password" class="forget-password">{TX_ESQUECEU_SENHA}</a>
+                  </div>
+                  <!--<div class="login-options">
+                     <h4>{TX_ACESSE_USANDO}:</h4>
+                     <ul class="social-icons">
+                         <li>
+                             <a class="social-icon-color facebook" data-original-title="facebook" href="javascript:;"></a>
+                         </li>
+                         <li>
+                             <a class="social-icon-color twitter" data-original-title="Twitter" href="javascript:;"></a>
+                         </li>
+                         <li>
+                             <a class="social-icon-color googleplus" data-original-title="Goole Plus" href="javascript:;"></a>
+                         </li>
+                         <li>
+                             <a class="social-icon-color linkedin" data-original-title="Linkedin" href="javascript:;"></a>
+                         </li>
+                     </ul>
+                     </div> -->
+                  <!--<div class="create-account">
+                     <p>
+                         <a href="javascript:;" id="register-btn" class="uppercase">{TX_AINDA_NAO_POSSUO_CONTA}</a>
+                     </p>
+                     </div>-->
+               </form>
+               <!-- END LOGIN FORM -->
+               <!-- BEGIN FORGOT PASSWORD FORM -->
+               <form class="forget-form" action="index.php?module=login&method=send_pass"  method="post">
+                  <h3 class="font-green">{TX_ESQUECEU_SENHA}</h3>
+                  <p> {TX_REDEFINIR_SENHA} </p>
+                  <div class="form-group">
+                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" /> 
+                  </div>
+                  <div class="form-actions">
+                     <button type="button" id="back-btn" class="btn green btn-outline" onClick="javascript:history.back();">{TX_VOLTAR}</button>
+                     <button type="submit" class="btn btn-success uppercase pull-right">{BTN_SUBMIT}</button>
+                  </div>
+               </form>
+               <!-- END FORGOT PASSWORD FORM -->
+               <!-- BEGIN REGISTRATION FORM -->
+               <form class="register-form" action="index.php?module=cadastro&method=insere" method="post">
+                  <h3 class="font-green">{TX_CRIAR_NOVA_CONTA}</h3>
+                  <p class="hint"> {TX_ENTRE_INFORMACOES}: </p>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Nome Completo</label>
+                     <input class="form-control placeholder-no-fix" type="text" placeholder="Nome completo" name="nome" /> 
+                  </div>
+                  <div class="form-group">
+                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                     <label class="control-label visible-ie8 visible-ie9">Email</label>
+                     <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email" /> 
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Endere&ccedil;o</label>
+                     <input class="form-control placeholder-no-fix" type="text" placeholder="Endere&ccedil;o" name="endereco" />
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Estado</label>                    
+                     <select name="estado"  id="estados" class="form-control" >
+                     {listagem_estado}
+                     </select>          
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Cidade</label>
+                     <!--<input class="form-control placeholder-no-fix" type="text" placeholder="City/Town" name="cidade" /> -->
+                     <select id="cidades" name="cidade" class="form-control" >
+                     {listagem_cidade}
+                     </select>
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Pa&iacute;s</label>
+                     <select name="pais" class="form-control">
                         <option value="AF">Afghanistan</option>
                         <option value="AL">Albania</option>
                         <option value="DZ">Algeria</option>
@@ -383,369 +385,353 @@
                         <option value="YE">Yemen</option>
                         <option value="ZM">Zambia</option>
                         <option value="ZW">Zimbabwe</option>
-                    </select>
-                </div>
-                <p class="hint"> Entre com as informa&ccedil;&otilde;es de acesso: </p>
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Login</label>
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Login" name="email" /> </div>
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Password</label>
-                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="senha" /> </div>
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Re-type your password</label>
-                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type your password" name="senha2" /> </div>
-                <div class="form-group margin-top-20 margin-bottom-20">
-                    <label class="mt-checkbox mt-checkbox-outline">
-                        <input type="checkbox" name="remember" value="1" />
-                        <input type="checkbox" name="tnc" /> Eu concordo com os
-                        <a href="index.php?module=login&method=termos">Termos de uso</a>
-                        <span></span>
-                    </label>
-                    <div id="register_tnc_error"> </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="register-back-btn" class="btn green btn-outline" onClick="javascript:history.back();">{TX_VOLTAR}</button>
-                    <button type="submit" id="register-submit-btn" class="btn btn-success uppercase pull-right">{BTN_SUBMIT}</button>
-                </div>
-            </form>
-            <!-- END REGISTRATION FORM -->
-        </div>
-        <div class="copyright"> 2010 - 2020 © {TITULO_SISTEMA}. </div>
-        <!--[if lt IE 9]>
-<script src="assets/global/plugins/respond.min.js"></script>
-<script src="assets/global/plugins/excanvas.min.js"></script> 
-<![endif]-->
-
-    <script language="javascript">
-	
-	function valida_cad()
-	{
-	
-		if(document.forms_cad.nome.value == "" || document.forms_cad.nome.value == " ")
-		{
-			alert("Preencha com seu nome");
-			return false;	
-		}
-
-		if(document.forms_cad.nome.value == false )
-		{
-			alert("Preencha com seu nome");
-			return false;	
-		}
-	
-
-		if(document.forms_cad.email.value == "" || document.forms_cad.email.value == " ")
-		{
-			alert("Preencha com seu e-mail");
-			return false;	
-		}
-
-		if(document.forms_cad.email.value == false)
-		{
-			alert("Preencha com seu e-mail");
-			return false;	
-		}
-
-		if(document.forms_cad.senha.value == "" || document.forms_cad.senha.value == " " )
-		{
-			alert("Preencha com sua senha");
-			return false;	
-		}
-
-		if(document.forms_cad.senha.value == false)
-		{
-			alert("Preencha com sua senha");
-			return false;	
-		}
-
-		if(document.forms_cad.senha.value != document.forms_cad.senha2.value)
-		{
-			alert("As senhas digitadas estao diferentes");
-			return false;	
-		}
-
-		return true;	
-	}
-	
-	</script>
-
-<script language="javascript">
-   
-   
-   function validaLogin()
-   {
-      
-      if(document.forms_cad.login.value == "" || document.forms_cad.login.value == " ")
-      {
-         alert("Fill your e-mail");
-         return false;	
-      }
-
-      if(document.forms_cad.value == false)
-      {
-         alert("Fill your e-mail");
-         return false;	
-      }
-
-      if(document.forms_cad.senha.value == "" || document.forms_cad.senha.value == " ")
-      {
-         alert("Fill your password");
-         return false;	
-      }
-      
-      var es = document.getElementById('departamento');
-
-      if(es.options[es.selectedIndex].value == "0")
-      {
-         alert("Selecione uma opção");
-         return false;	
-      }
-      
-      return true;
-   }
-
-function envia_form()
-{
-	
-	if(document.login.login.value == "" || document.forms2.login.value == " ")
-	{
-		alert("Preencha com seu e-mail");
-		return false;	
-	}
-
-	if(document.login.login.value == false)
-	{
-		alert("Preencha com seu e-mail");
-		return false;	
-	}
-
-	if(document.login.senha.value == "" || document.forms2.senha.value == " ")
-	{
-		alert("Preencha com sua senha");
-		return false;	
-	}
-
-	if(document.login.senha.value == false)
-	{
-		alert("Preencha com sua senha");
-		return false;	
-	}
-
-
-	document.login.submit();	
-}
-
-</script>
-   <script type="text/javascript">
-        jQuery(document).ready(function(){
-            jQuery('#estados').change(function(){
-                jQuery('#cidades').load('index.php?module=cadastro&method=ajax_cidade&estado='+jQuery('#estados').val() );
-
-            });
-        });
-
-    </script>
-
-
-{ANALYTICS}
-
-        <!-- BEGIN CORE PLUGINS -->
-          <script src="assets/global/plugins/jquery-1.4.2.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <!-- END CORE PLUGINS -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
-        <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <!-- END THEME LAYOUT SCRIPTS -->
-    </body>
-
-</html>
-<!-- END login -->
-
-
-
-<!-- BEGIN confirm --><!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en">
-    <!--<![endif]-->
-    <!-- BEGIN HEAD -->
-
-    <head>
-        <meta charset="utf-8" />
-        <title>{TITULO_SISTEMA}</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="" name="description" />
-        <meta content="" name="author" />
-        <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
-        <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" /> </head>
-    <!-- END HEAD -->
-
-    <body class=" login">
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="index.html">
-                <img src="images/logo-big.png" alt="" /> </a>
-        </div>
-        <!-- END LOGO -->
-        <!-- BEGIN LOGIN -->
-        <div class="content">
-
-		</div>
-        </body>
-        	
-
-{ANALYTICS}
-
-        <!-- BEGIN CORE PLUGINS -->
-          <script src="assets/global/plugins/jquery-1.4.2.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <!-- END CORE PLUGINS -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
-        <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <!-- END THEME LAYOUT SCRIPTS -->
-    </body>
-
-</html>
-<!-- END confirm -->
-
-
-<!-- BEGIN termos -->
-<!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en">
-    <!--<![endif]-->
-    <!-- BEGIN HEAD -->
-
-    <head>
-        <meta charset="utf-8" />
-        <title>{TITULO_SISTEMA}</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="" name="description" />
-        <meta content="" name="author" />
-        <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
-        <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" /> </head>
-    <!-- END HEAD -->
-
-    <body class=" login">
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="index.html">
-                <img src="images/logo-big.png" alt="" /> </a>
-        </div>
-        <!-- END LOGO -->
-        <!-- BEGIN LOGIN -->
-        <div class="content" style="width:70%;">
-
-                <div class="form-actions">
-                    <button type="button" id="back-btn" class="btn green btn-outline" onClick="javascript:history.back();">{TX_VOLTAR}</button>
-                </div>
-
-		</div>
-        </body>
-
-		{ANALYTICS}
-
-        <!-- BEGIN CORE PLUGINS -->
-          <script src="assets/global/plugins/jquery-1.4.2.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <!-- END CORE PLUGINS -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
-        <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <!-- END THEME LAYOUT SCRIPTS -->
-    </body>
-
-</html>
-
-<!-- END termos -->
+                     </select>
+                  </div>
+                  <p class="hint"> Entre com as informa&ccedil;&otilde;es de acesso: </p>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Login</label>
+                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Login" name="email" /> 
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Password</label>
+                     <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="senha" /> 
+                  </div>
+                  <div class="form-group">
+                     <label class="control-label visible-ie8 visible-ie9">Re-type your password</label>
+                     <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type your password" name="senha2" /> 
+                  </div>
+                  <div class="form-group margin-top-20 margin-bottom-20">
+                     <label class="mt-checkbox mt-checkbox-outline">
+                     <input type="checkbox" name="remember" value="1" />
+                     <input type="checkbox" name="tnc" /> Eu concordo com os
+                     <a href="index.php?module=login&method=termos">Termos de uso</a>
+                     <span></span>
+                     </label>
+                     <div id="register_tnc_error"> </div>
+                  </div>
+                  <div class="form-actions">
+                     <button type="button" id="register-back-btn" class="btn green btn-outline" onClick="javascript:history.back();">{TX_VOLTAR}</button>
+                     <button type="submit" id="register-submit-btn" class="btn btn-success uppercase pull-right">{BTN_SUBMIT}</button>
+                  </div>
+               </form>
+               <!-- END REGISTRATION FORM -->
+            </div>
+            <div class="copyright"> 2010 - 2020 © {TITULO_SISTEMA}. </div>
+            <!--[if lt IE 9]>
+            <script src="assets/global/plugins/respond.min.js"></script>
+            <script src="assets/global/plugins/excanvas.min.js"></script> 
+            <![endif]-->
+            <script language="javascript">
+               function valida_cad()
+               {
+               
+               	if(document.forms_cad.nome.value == "" || document.forms_cad.nome.value == " ")
+               	{
+               		alert("Preencha com seu nome");
+               		return false;	
+               	}
+               
+               	if(document.forms_cad.nome.value == false )
+               	{
+               		alert("Preencha com seu nome");
+               		return false;	
+               	}
+               
+               
+               	if(document.forms_cad.email.value == "" || document.forms_cad.email.value == " ")
+               	{
+               		alert("Preencha com seu e-mail");
+               		return false;	
+               	}
+               
+               	if(document.forms_cad.email.value == false)
+               	{
+               		alert("Preencha com seu e-mail");
+               		return false;	
+               	}
+               
+               	if(document.forms_cad.senha.value == "" || document.forms_cad.senha.value == " " )
+               	{
+               		alert("Preencha com sua senha");
+               		return false;	
+               	}
+               
+               	if(document.forms_cad.senha.value == false)
+               	{
+               		alert("Preencha com sua senha");
+               		return false;	
+               	}
+               
+               	if(document.forms_cad.senha.value != document.forms_cad.senha2.value)
+               	{
+               		alert("As senhas digitadas estao diferentes");
+               		return false;	
+               	}
+               
+               	return true;	
+               }
+               
+            </script>
+            <script language="javascript">
+               function validaLogin()
+               {
+                  
+                  if(document.forms_cad.login.value == "" || document.forms_cad.login.value == " ")
+                  {
+                     alert("Fill your e-mail");
+                     return false;	
+                  }
+               
+                  if(document.forms_cad.value == false)
+                  {
+                     alert("Fill your e-mail");
+                     return false;	
+                  }
+               
+                  if(document.forms_cad.senha.value == "" || document.forms_cad.senha.value == " ")
+                  {
+                     alert("Fill your password");
+                     return false;	
+                  }
+                  
+                  var es = document.getElementById('departamento');
+               
+                  if(es.options[es.selectedIndex].value == "0")
+                  {
+                     alert("Selecione uma opção");
+                     return false;	
+                  }
+                  
+                  return true;
+               }
+               
+               function envia_form()
+               {
+               
+               if(document.login.login.value == "" || document.forms2.login.value == " ")
+               {
+               alert("Preencha com seu e-mail");
+               return false;	
+               }
+               
+               if(document.login.login.value == false)
+               {
+               alert("Preencha com seu e-mail");
+               return false;	
+               }
+               
+               if(document.login.senha.value == "" || document.forms2.senha.value == " ")
+               {
+               alert("Preencha com sua senha");
+               return false;	
+               }
+               
+               if(document.login.senha.value == false)
+               {
+               alert("Preencha com sua senha");
+               return false;	
+               }
+               
+               
+               document.login.submit();	
+               }
+               
+            </script>
+            <script type="text/javascript">
+               jQuery(document).ready(function(){
+                   jQuery('#estados').change(function(){
+                       jQuery('#cidades').load('index.php?module=cadastro&method=ajax_cidade&estado='+jQuery('#estados').val() );
+               
+                   });
+               });
+               
+            </script>
+            {ANALYTICS}
+            <!-- BEGIN CORE PLUGINS -->
+            <script src="assets/global/plugins/jquery-1.4.2.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+            <!-- END CORE PLUGINS -->
+            <!-- BEGIN PAGE LEVEL PLUGINS -->
+            <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+            <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+            <!-- END PAGE LEVEL PLUGINS -->
+            <!-- BEGIN THEME GLOBAL SCRIPTS -->
+            <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
+            <!-- END THEME GLOBAL SCRIPTS -->
+            <!-- BEGIN PAGE LEVEL SCRIPTS -->
+            <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script>
+            <!-- END PAGE LEVEL SCRIPTS -->
+            <!-- BEGIN THEME LAYOUT SCRIPTS -->
+            <!-- END THEME LAYOUT SCRIPTS -->
+         </body>
+      </html>
+      <!-- END login -->
+      <!-- BEGIN confirm --><!DOCTYPE html>
+      <!--[if IE 8]> 
+      <html lang="en" class="ie8 no-js">
+         <![endif]-->
+         <!--[if IE 9]> 
+         <html lang="en" class="ie9 no-js">
+            <![endif]-->
+            <!--[if !IE]><!-->
+            <html lang="en">
+               <!--<![endif]-->
+               <!-- BEGIN HEAD -->
+               <head>
+                  <meta charset="utf-8" />
+                  <title>{TITULO_SISTEMA}</title>
+                  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                  <meta content="width=device-width, initial-scale=1" name="viewport" />
+                  <meta content="" name="description" />
+                  <meta content="" name="author" />
+                  <!-- BEGIN GLOBAL MANDATORY STYLES -->
+                  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+                  <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+                  <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+                  <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+                  <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+                  <!-- END GLOBAL MANDATORY STYLES -->
+                  <!-- BEGIN PAGE LEVEL PLUGINS -->
+                  <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+                  <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+                  <!-- END PAGE LEVEL PLUGINS -->
+                  <!-- BEGIN THEME GLOBAL STYLES -->
+                  <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+                  <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+                  <!-- END THEME GLOBAL STYLES -->
+                  <!-- BEGIN PAGE LEVEL STYLES -->
+                  <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+                  <!-- END PAGE LEVEL STYLES -->
+                  <!-- BEGIN THEME LAYOUT STYLES -->
+                  <!-- END THEME LAYOUT STYLES -->
+                  <link rel="shortcut icon" href="favicon.ico" />
+               </head>
+               <!-- END HEAD -->
+               <body class=" login">
+                  <!-- BEGIN LOGO -->
+                  <div class="logo">
+                     <a href="index.html">
+                     <img src="images/logo-big.png" alt="" /> </a>
+                  </div>
+                  <!-- END LOGO -->
+                  <!-- BEGIN LOGIN -->
+                  <div class="content">
+                  </div>
+               </body>
+               {ANALYTICS}
+               <!-- BEGIN CORE PLUGINS -->
+               <script src="assets/global/plugins/jquery-1.4.2.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+               <!-- END CORE PLUGINS -->
+               <!-- BEGIN PAGE LEVEL PLUGINS -->
+               <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+               <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+               <!-- END PAGE LEVEL PLUGINS -->
+               <!-- BEGIN THEME GLOBAL SCRIPTS -->
+               <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
+               <!-- END THEME GLOBAL SCRIPTS -->
+               <!-- BEGIN PAGE LEVEL SCRIPTS -->
+               <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script>
+               <!-- END PAGE LEVEL SCRIPTS -->
+               <!-- BEGIN THEME LAYOUT SCRIPTS -->
+               <!-- END THEME LAYOUT SCRIPTS -->
+               </body>
+            </html>
+            <!-- END confirm -->
+            <!-- BEGIN termos -->
+            <!DOCTYPE html>
+            <!--[if IE 8]> 
+            <html lang="en" class="ie8 no-js">
+               <![endif]-->
+               <!--[if IE 9]> 
+               <html lang="en" class="ie9 no-js">
+                  <![endif]-->
+                  <!--[if !IE]><!-->
+                  <html lang="en">
+                     <!--<![endif]-->
+                     <!-- BEGIN HEAD -->
+                     <head>
+                        <meta charset="utf-8" />
+                        <title>{TITULO_SISTEMA}</title>
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                        <meta content="width=device-width, initial-scale=1" name="viewport" />
+                        <meta content="" name="description" />
+                        <meta content="" name="author" />
+                        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+                        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+                        <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+                        <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+                        <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+                        <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+                        <!-- END GLOBAL MANDATORY STYLES -->
+                        <!-- BEGIN PAGE LEVEL PLUGINS -->
+                        <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+                        <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+                        <!-- END PAGE LEVEL PLUGINS -->
+                        <!-- BEGIN THEME GLOBAL STYLES -->
+                        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+                        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+                        <!-- END THEME GLOBAL STYLES -->
+                        <!-- BEGIN PAGE LEVEL STYLES -->
+                        <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+                        <!-- END PAGE LEVEL STYLES -->
+                        <!-- BEGIN THEME LAYOUT STYLES -->
+                        <!-- END THEME LAYOUT STYLES -->
+                        <link rel="shortcut icon" href="favicon.ico" />
+                     </head>
+                     <!-- END HEAD -->
+                     <body class=" login">
+                        <!-- BEGIN LOGO -->
+                        <div class="logo">
+                           <a href="index.html">
+                           <img src="images/logo-big.png" alt="" /> </a>
+                        </div>
+                        <!-- END LOGO -->
+                        <!-- BEGIN LOGIN -->
+                        <div class="content" style="width:70%;">
+                           <div class="form-actions">
+                              <button type="button" id="back-btn" class="btn green btn-outline" onClick="javascript:history.back();">{TX_VOLTAR}</button>
+                           </div>
+                        </div>
+                     </body>
+                     {ANALYTICS}
+                     <!-- BEGIN CORE PLUGINS -->
+                     <script src="assets/global/plugins/jquery-1.4.2.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+                     <!-- END CORE PLUGINS -->
+                     <!-- BEGIN PAGE LEVEL PLUGINS -->
+                     <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+                     <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+                     <!-- END PAGE LEVEL PLUGINS -->
+                     <!-- BEGIN THEME GLOBAL SCRIPTS -->
+                     <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
+                     <!-- END THEME GLOBAL SCRIPTS -->
+                     <!-- BEGIN PAGE LEVEL SCRIPTS -->
+                     <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script>
+                     <!-- END PAGE LEVEL SCRIPTS -->
+                     <!-- BEGIN THEME LAYOUT SCRIPTS -->
+                     <!-- END THEME LAYOUT SCRIPTS -->
+                     </body>
+                  </html>
+                  <!-- END termos -->
