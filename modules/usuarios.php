@@ -66,11 +66,14 @@ require_once("modules/home.php");
 			$btn_novo = '<input style="margin-left:-3px;" type="button" class="btn" onclick="location=\'index.php?module=usuarios&method=usuario_novo\'" value="Cadastrar novo usu&aacute;rio">';
 		else
 			$btn_novo = "";	
+      
+      
+      $grid_user = montaGrid("sample_1",$usuarios_listagem,"usuarios");
 
 		$this->cabecalho();                                                                            
 		$GLOBALS["base"]->template = new template();       
 		
-		$GLOBALS["base"]->template->set_var("usuarios_listagem",$usuarios_listagem);
+		$GLOBALS["base"]->template->set_var("grid_user",$grid_user);
 		$GLOBALS["base"]->template->set_var("btn_novo",$btn_novo);
 													
 		$GLOBALS["base"]->write_design_specific('usuarios.tpl' , 'main');                       
@@ -303,10 +306,15 @@ require_once("modules/home.php");
          }
 
 
+      $form = montaForm("usuarionovo");
+      $grupos = montaSelect("usuarionovo",$listagem_grupos,7);  // campos do tipo select
+      
 
 		$this->cabecalho();                                                                            
 		$GLOBALS["base"]->template = new template();       
-		$GLOBALS["base"]->template->set_var('listagem_grupos',$listagem_grupos);
+		$GLOBALS["base"]->template->set_var('form',$form);
+		$GLOBALS["base"]->template->set_var('grupos',$grupos);
+      
 		$GLOBALS["base"]->template->set_var('listagem_privilegios',$listagem_privilegios);
 		$GLOBALS["base"]->template->set_var("listagemGrupos",$this->listagrupos());
 		$GLOBALS["base"]->template->set_var('BTN_SALVAR' , BTN_SALVAR);
@@ -597,21 +605,10 @@ require_once("modules/home.php");
 
 
 			$sql = "SELECT * FROM grupos ORDER BY nome ASC";
-			$db->query($sql,__LINE__,__FILE__);
-			$db->next_record();
-			for($l = 0; $l < $db->num_rows(); $l++)
-			{
-            $listagem_grupos .= '<option value="'.$db->f("id").'" ';
-            
-            if($db->f("id") == $grupo)
-               $listagem_grupos .= 'selected="selected" ';
 
-            $listagem_grupos .= '>'.$db->f("nome").'</option>';           
-   			
-            $db->next_record();
-         }
-
-
+         $listagem_grupos = make_combo($sql, "nome", "id", $grupo);
+         $dados_user = montaFormEdita("usuarionovo", $id);
+         $grupos = montaSelect("usuarionovo",$listagem_grupos,7);
       
       
 			$this->cabecalho();                                                                            
@@ -640,7 +637,9 @@ require_once("modules/home.php");
 				
 				$GLOBALS["base"]->template->set_var("avatar",$avatar);
 			}
+         
 
+			$GLOBALS["base"]->template->set_var("dados_user",$dados_user);
 			$GLOBALS["base"]->template->set_var('BTN_SALVAR' , BTN_SALVAR);
 			$GLOBALS["base"]->template->set_var('BTN_CANCELAR' , BTN_CANCELAR);  
 			$GLOBALS["base"]->template->set_var("listagem_privilegios",$listagem_privilegios);
@@ -648,7 +647,7 @@ require_once("modules/home.php");
 			$GLOBALS["base"]->template->set_var("email",$email);
 			$GLOBALS["base"]->template->set_var("senha",$senha);
 			$GLOBALS["base"]->template->set_var("telefone",$telefone);
-			$GLOBALS["base"]->template->set_var("listagem_grupos",$listagem_grupos);
+			$GLOBALS["base"]->template->set_var("grupos",$grupos);
 			$GLOBALS["base"]->template->set_var("id",$id);
 
 			$GLOBALS["base"]->template->set_var("listagemGrupos",$this->listagrupos());
@@ -909,10 +908,13 @@ require_once("modules/home.php");
 		else
 			$btn_novo = "";	
       */
+         
+      $grid_grupos = montaGrid("sample_1",$listagem,"grupos");
+         
 
 		$this->cabecalho();                                                                            
 		$GLOBALS["base"]->template = new template();       
-		$GLOBALS["base"]->template->set_var("listagem",$listagem);
+		$GLOBALS["base"]->template->set_var("grid_grupos",$grid_grupos);
 		$GLOBALS["base"]->write_design_specific('usuarios.tpl' , 'grupos');                       
 		$GLOBALS["base"]->template = new template();                                                  
 		$this->footer();                                                                           

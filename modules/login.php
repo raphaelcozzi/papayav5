@@ -16,13 +16,11 @@ class login
     */
 	
 	
-						function main()
+	function main()
 	{
 		$db = new db();
 
 		@session_start();
-
-		email("raphaelcozzi@gmail.com", "teste", "testando");
 
 		$sql = "select * from estados";
 		$db->query($sql, __LINE__, __FILE__);

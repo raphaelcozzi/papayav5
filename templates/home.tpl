@@ -182,7 +182,7 @@
             <!-- END CONTAINER -->
             <!-- BEGIN FOOTER -->
             <div class="page-footer">
-               <div class="page-footer-inner"> 2010 - 2019 &copy; {TITULO_SISTEMA}.
+               <div class="page-footer-inner"> 2010 - {anoatual} &copy; {TITULO_SISTEMA}.
                </div>
                <div class="scroll-to-top">
                   <i class="icon-arrow-up"></i>

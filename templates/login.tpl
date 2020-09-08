@@ -74,7 +74,7 @@
                      </select>
                   </div>
                   <div class="form-actions">
-                     <button type="submit" class="btn green uppercase">Login</button>
+                     <button type="submit" class="btn green uppercase">{TX_ENTRAR}</button>
                      <label class="rememberme check mt-checkbox mt-checkbox-outline">
                      <input type="checkbox" name="remember" value="1" />{TX_LEMBRAR}
                      <span></span>
@@ -416,7 +416,7 @@
                </form>
                <!-- END REGISTRATION FORM -->
             </div>
-            <div class="copyright"> 2010 - 2020 © {TITULO_SISTEMA}. </div>
+            <div class="copyright"> 2010 - 2021 © {TITULO_SISTEMA}. </div>
             <!--[if lt IE 9]>
             <script src="assets/global/plugins/respond.min.js"></script>
             <script src="assets/global/plugins/excanvas.min.js"></script> 

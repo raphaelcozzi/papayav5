@@ -169,6 +169,7 @@ class home
 		$GLOBALS["base"]->template->set_var('msg_error', "");
 
 		$GLOBALS["base"]->template->set_var('TITULO_SISTEMA', TITULO_SISTEMA);
+      $GLOBALS["base"]->template->set_var('anoatual', date("Y"));
 
 		echo '<script language="javascript">document.getElementById("overover").style.display="none";</script>';
 

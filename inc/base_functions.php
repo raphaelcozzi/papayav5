@@ -424,4 +424,681 @@ function s3_upload_dynamic($file_name, $file_patch, $dir = "")
 	return $s3_path;
 }
 
+
+
+//
+// 
+// Fuções de schema para montagem dinâmica
+//  
+//    
+
+function montaForm($form)
+{
+   $db = new db();
+   $db2 = new db();
+   
+   
+   $sql = "SELECT * FROM schema_".$form." WHERE exibir = 1 AND status = 1 ORDER BY ordem ASC";
+   $db->query($sql,__LINE__,__FILE__);
+   $db->next_record();
+   for($l = 0; $l < $db->num_rows(); $l++)
+   {
+      
+      // Campos do tipo text, number, file, tel, email, password e hidden
+      if($db->f("campo_type") != 3 && $db->f("campo_type") != 7 && $db->f("campo_type") != 8 && $db->f("campo_type") != 9  && $db->f("campo_type") != 12 )
+      {
+      
+         $sql2 = "SELECT nome AS type_nome FROM schema_types WHERE id = ".$db->f("campo_type")." ";
+         $db2->query($sql2,__LINE__,__FILE__);
+         $db2->next_record();
+
+         $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="'.$db2->f("type_nome").'" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if(strlen($db->f("campo_value")) > 3)
+                      $form_content .= ' value="'.$db->f("campo_value").'" ';
+
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+      }
+      
+      // Campos do tipo date
+      if($db->f("campo_type") == 3)
+      {
+         
+         
+         $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="date" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"  maxlength="10" '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if(strlen($db->f("campo_value")) > 3)
+                      $form_content .= ' value="'.$db->f("campo_value").'" ';
+
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+         
+         
+      }
+      
+      // Campos do tipo radio
+      if($db->f("campo_type") == 8)
+      {
+         
+
+         $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="radio" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if(strlen($db->f("campo_value")) > 3)
+                      $form_content .= ' value="'.$db->f("campo_value").'" ';
+
+                   if(strlen($db->f("campo_checked")) > 3)
+                      $form_content .= ' checked="'.$db->f("campo_checked").'" ';
+
+                   if(strlen($db->f("campo_selected")) > 3)
+                      $form_content .= ' selected="'.$db->f("campo_selected").'" ';
+
+                   
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+         
+         
+      }
+      
+      // Campos do tipo checkbox
+      if($db->f("campo_type") == 12)
+      {
+         
+           $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="checkbox" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if(strlen($db->f("campo_value")) > 3)
+                      $form_content .= ' value="'.$db->f("campo_value").'" ';
+
+                   if(strlen($db->f("campo_checked")) > 3)
+                      $form_content .= ' checked="'.$db->f("campo_checked").'" ';
+
+                   if(strlen($db->f("campo_selected")) > 3)
+                      $form_content .= ' selected="'.$db->f("campo_selected").'" ';
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+       
+         
+         
+      }
+      // Campos do tipo textarea
+      if($db->f("campo_type") == 9)
+      {
+         
+         $form_content .= '<div class="form-group">
+                              <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                              <div class="col-md-4">
+                                 <textarea name="'.$db->f("campo_name").'" rows="'.$db->f("campo_rows").'" ';
+         
+         
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+         
+         
+         $form_content .= '>'.$db->f("campo_value").'</textarea>
+                                  <span class="help-block"></span>
+                              </div>
+                          </div>';
+         
+      }
+      
+      $db->next_record();
+   }
+   
+   return $form_content;
+}
+
+function montaSelect($form, $options, $id_campo)
+{
+   $db = new db();
+   $db2 = new db();
+   
+   
+   $sql = "SELECT * FROM schema_".$form." WHERE exibir = 1 AND status = 1 AND campo_type = 7 AND id = ".$id_campo." LIMIT 1";
+   $db->query($sql,__LINE__,__FILE__);
+   $db->next_record();
+         
+         $form_content .= '<div class="form-group">
+               <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+               <div class="col-md-4">
+                  <div class="input-group">
+                     <select name="'.$db->f("campo_name").'" id="'.$db->f("campo_id").'"  class="'.$db->f("campo_class").'" ';
+         
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+         
+         
+         $form_content .= '>
+                        '.$options.'
+                     </select>
+                  </div>
+               </div>
+            </div>';
+         
+         
+   
+   return $form_content;
+}
+
+function montaGrid($grid_id, $listagem, $grid_nome)
+{
+   $db = new db();
+   $db2 = new db();
+   
+   $grid = '<table class="table table-striped table-bordered table-hover" id="'.$grid_id.'">
+               <thead>
+                  <tr>';
+   
+   
+   $sql = "SELECT label_coluna FROM schema_grid_".$grid_nome." WHERE exibir = 1 ORdER BY ordem ASC ";
+   $db->query($sql,__LINE__,__FILE__);
+   $db->next_record();
+   for($l = 0; $l < $db->num_rows(); $l++)
+   {
+      $grid .= '<th>'.$db->f("label_coluna").'</th>';
+
+      $db->next_record();
+   }
+
+      $grid .= '</tr>
+           </thead>
+           <tbody>
+              '.$listagem.'
+           </tbody>
+        </table>';
+
+   return $grid;
+}
+
+function montaFormEdita($form, $idRegistro)
+{
+   $db = new db();
+   $db2 = new db();
+   $db3 = new db();
+   
+   
+   $sql = "SELECT * FROM schema_".$form." WHERE exibir = 1 AND status = 1 ORDER BY ordem ASC";
+   $db->query($sql,__LINE__,__FILE__);
+   $db->next_record();
+   for($l = 0; $l < $db->num_rows(); $l++)
+   {
+      
+      // Campos do tipo text, number, file, tel, email, password e hidden
+      if($db->f("campo_type") != 3 && $db->f("campo_type") != 7 && $db->f("campo_type") != 8 && $db->f("campo_type") != 9  && $db->f("campo_type") != 12 )
+      {
+      
+         $sql2 = "SELECT nome AS type_nome FROM schema_types WHERE id = ".$db->f("campo_type")." ";
+         $db2->query($sql2,__LINE__,__FILE__);
+         $db2->next_record();
+
+         
+         $sql3 = "SELECT ".$db->f("coluna")." AS campo_value FROM  ".$db->f("tabela")." WHERE id = ".$idRegistro." ";
+         $db3->query($sql3,__LINE__,__FILE__);
+         $db3->next_record();
+         
+         $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="'.$db2->f("type_nome").'" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if($db3->num_rows() > 0)
+                      $form_content .= ' value="'.$db3->f("campo_value").'" ';
+
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+      }
+      
+      // Campos do tipo date
+      if($db->f("campo_type") == 3)
+      {
+         
+         
+         $sql3 = "SELECT ".$db->f("coluna")." AS campo_value FROM  ".$db->f("tabela")." WHERE id = ".$idRegistro." ";
+         $db3->query($sql3,__LINE__,__FILE__);
+         $db3->next_record();
+         
+         $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="date" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"  maxlength="10" '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if($db3->num_rows() > 0)
+                      $form_content .= ' value="'.$db3->f("campo_value").'" ';
+
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+         
+         
+      }
+      
+      // Campos do tipo radio
+      if($db->f("campo_type") == 8)
+      {
+         
+         $sql3 = "SELECT ".$db->f("coluna")." AS campo_value FROM  ".$db->f("tabela")." WHERE id = ".$idRegistro." ";
+         $db3->query($sql3,__LINE__,__FILE__);
+         $db3->next_record();
+
+         $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="radio" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if($db3->num_rows() > 0)
+                      $form_content .= ' value="'.$db3->f("campo_value").'" ';
+
+                   if(strlen($db->f("campo_checked")) > 3)
+                      $form_content .= ' checked="'.$db->f("campo_checked").'" ';
+
+                   if(strlen($db->f("campo_selected")) > 3)
+                      $form_content .= ' selected="'.$db->f("campo_selected").'" ';
+
+                   
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+         
+         
+      }
+      
+      // Campos do tipo checkbox
+      if($db->f("campo_type") == 12)
+      {
+         
+         $sql3 = "SELECT ".$db->f("coluna")." AS campo_value FROM  ".$db->f("tabela")." WHERE id = ".$idRegistro." ";
+         $db3->query($sql3,__LINE__,__FILE__);
+         $db3->next_record();
+         
+         
+           $form_content .= '<div class="form-group">
+                  <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                  <div class="col-md-4">
+                     <input type="checkbox" class="'.$db->f("campo_class").'" name="'.$db->f("campo_name").'"  '.$db->f("campo_required").' '; 
+
+                   if(strlen($db->f("campo_placeholder")) > 3)
+                      $form_content .= ' placeholder="'.$db->f("campo_placeholder").'" ';
+
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+
+                   if($db3->num_rows() > 0)
+                      $form_content .= ' value="'.$db3->f("campo_value").'" ';
+
+
+                   if(strlen($db->f("campo_checked")) > 3)
+                      $form_content .= ' checked="'.$db->f("campo_checked").'" ';
+
+                   if(strlen($db->f("campo_selected")) > 3)
+                      $form_content .= ' selected="'.$db->f("campo_selected").'" ';
+
+                  $form_content .= '>
+                     <span class="help-block"></span>
+                  </div>
+               </div>';
+       
+         
+         
+      }
+      // Campos do tipo textarea
+      if($db->f("campo_type") == 9)
+      {
+         $sql3 = "SELECT ".$db->f("coluna")." AS campo_value FROM  ".$db->f("tabela")." WHERE id = ".$idRegistro." ";
+         $db3->query($sql3,__LINE__,__FILE__);
+         $db3->next_record();
+
+         
+         $form_content .= '<div class="form-group">
+                              <label class="col-md-3 control-label">'.$db->f("campo_label").'</label>
+                              <div class="col-md-4">
+                                 <textarea name="'.$db->f("campo_name").'" rows="'.$db->f("campo_rows").'" ';
+         
+         
+
+                   if(strlen($db->f("campo_onclick")) > 3)
+                      $form_content .= ' onClick="'.$db->f("campo_onclick").'" ';
+
+
+                   if(strlen($db->f("campo_onchange")) > 3)
+                      $form_content .= ' onChange="'.$db->f("campo_onchange").'" ';
+
+
+                   if(strlen($db->f("campo_onmouseover")) > 3)
+                      $form_content .= ' onMouseover="'.$db->f("campo_onmouseover").'" ';
+
+                   if(strlen($db->f("campo_onmouseout")) > 3)
+                      $form_content .= ' onMouseout="'.$db->f("campo_onmouseout").'" ';
+
+
+                   if(strlen($db->f("campo_onblur")) > 3)
+                      $form_content .= ' onBlur="'.$db->f("campo_onblur").'" ';
+
+                   if(strlen($db->f("campo_style")) > 3)
+                      $form_content .= ' style="'.$db->f("campo_style").'" ';
+         
+         
+         $form_content .= '>'.$db3->f("campo_value").'</textarea>
+                                  <span class="help-block"></span>
+                              </div>
+                          </div>';
+         
+      }
+      
+      $db->next_record();
+   }
+   
+   return $form_content;
+}
+
+
+function generatePassword ($length = 8)
+{
+
+  // start with a blank password
+  $password = "";
+
+  // define possible characters
+  $possible = "0123456789bcdfghjkmnpqrstvwxyz"; 
+    
+  // set up a counter
+  $i = 0; 
+    
+  // add random characters to $password until $length is reached
+  while ($i < $length) { 
+
+    // pick a random character from the possible ones
+    $char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+        
+    // we don't want this character if it's already in the password
+    if (!strstr($password, $char)) { 
+      $password .= $char;
+      $i++;
+    }
+
+  }
+}
+
+
+function make_combo($query , $name_field , $id_field , $selected_id, $first_option = "")
+{
+    $db = new db();
+    $db->query($query,__LINE__,__FILE__);
+    $db->next_record();
+
+    if ($first_option != "")
+        $combo .= '<option value=0>'.$first_option;
+    for ($i = 0 ; $i < $db->num_rows() ; $i++)
+    {
+        if ($db->f($id_field) == $selected_id)
+            $selected = "selected";
+        else
+            $selected = "";
+        $combo .= '<option '.$selected.' value="'.$db->f($id_field).'">'.$db->f($name_field);
+    $db->next_record();
+    }
+    
+    return $combo;
+}
+
 ?>
