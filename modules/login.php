@@ -339,6 +339,190 @@ class login
 	{
 		$_SESSION['msg'] = array("mensagem" => $mensagem, "tm" => $cor, "mt" => "air");
 	}
+   
+       function send_pass()
+      {
+         
+         $db = new db();
+
+
+         if(isset($_REQUEST['key']) && $_REQUEST['key'] = "ss5Dd1s5g")
+         {         
+            /* Envia um e-mail com o link para redefinir a senha */
+            
+            $email = blockrequest($_REQUEST['email']);
+            
+            $sql = "SELECT COUNT(id) AS total, nome FROM usuarios WHERE email = '".$email."' ";
+            $db->query($sql,__LINE__,__FILE__);
+            $db->next_record();
+            if($db->f("total") > 0)
+            {
+               
+               $nome = $db->f("nome");
+               
+               $randNumber = substr(md5(md5(time()).rand(6,9)),0,10);
+
+               $sql = "UPDATE usuarios SET temp_key = '".$randNumber."' WHERE email = '".$email."' LIMIT 1";
+               $db->query($sql,__LINE__,__FILE__);
+               $db->next_record();
+
+               $linkRedefinir = ABS_LINK."/login/novasenha/".$randNumber."/".$email;
+
+               $msg = "Ol&aacute;, ".$nome.", voc&ecirc; solicitou a redefini&ccedil;&atilde;o da sua senha.<br>";
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= "Para definir uma nova senha, clique no link a seguir, ou copie e cole no seu navegador.";
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= "<strong><a href=".$linkRedefinir.">".$linkRedefinir."</a></strong>";
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= "Caso n&atilde;o tenha solicitado redefinir sua senha, desconsidere este e-mail e altere a sua senha no seu perfil.";
+               $msg .= "<br>";
+               $msg .= "Atenciosamente,<br>Equipe ".TITULO_SISTEMA."";
+               $msg .= "<br>";
+               $msg .= "Copyright 2020 - ".date("Y")." ".TITULO_SISTEMA."";
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= ABS_LINK;
+
+
+               $subject = "Redefinir sua senha - ".TITULO_SISTEMA." ";
+
+               email($email, $subject, $msg);
+               $GLOBALS["base"]->template->set_var('email' ,$email);     
+               
+               $_SESSION["email_solicitado"] = $email;
+
+               header("Location: ".ABS_LINK."/login/senhaenviada");
+            }
+            else 
+            {
+               header("Location: ".ABS_LINK."/login");
+               die();
+            }
+         }
+         
+      }
+      
+      function senhaenviada()
+      {
+         
+         $db = new db();
+
+
+         $email = $_SESSION["email_solicitado"];
+         $GLOBALS["base"]->template->set_var('msg_error' , '');
+            
+		   $alertaDisplay = 'hide';
+         
+         
+         
+   		$GLOBALS["base"]->template->set_var('login_field' ,$_REQUEST['login']);
+   		$GLOBALS["base"]->template->set_var('senha_field' ,$_REQUEST['senha']);
+         
+
+			$GLOBALS["base"]->template->set_var("alertaDisplay",$alertaDisplay);
+
+         $GLOBALS["base"]->template->set_var('ABS_LINK' ,ABS_LINK);
+			$GLOBALS["base"]->template->set_var("TX_ENTRAR",TX_ENTRAR);
+			$GLOBALS["base"]->template->set_var("TX_LEMBRAR",TX_LEMBRAR);
+			$GLOBALS["base"]->template->set_var("TX_LOGIN",TX_LOGIN);
+			$GLOBALS["base"]->template->set_var("TX_ESQUECEU_SENHA",TX_ESQUECEU_SENHA);
+			$GLOBALS["base"]->template->set_var("TX_ACESSE_USANDO",TX_ACESSE_USANDO);
+			$GLOBALS["base"]->template->set_var("TX_AINDA_NAO_POSSUO_CONTA",TX_AINDA_NAO_POSSUO_CONTA);
+			$GLOBALS["base"]->template->set_var("TX_REDEFINIR_SENHA",TX_REDEFINIR_SENHA);
+			$GLOBALS["base"]->template->set_var("TX_VOLTAR",TX_VOLTAR);
+			$GLOBALS["base"]->template->set_var("TX_ESQUECEU_A_SENHA",TX_ESQUECEU_A_SENHA);
+			$GLOBALS["base"]->template->set_var("TITULO_SISTEMA",TITULO_SISTEMA);
+			$GLOBALS["base"]->template->set_var("TX_CRIAR_NOVA_CONTA",TX_CRIAR_NOVA_CONTA);
+			$GLOBALS["base"]->template->set_var("TX_ENTRE_INFORMACOES",TX_ENTRE_INFORMACOES);
+			$GLOBALS["base"]->template->set_var("BTN_SUBMIT",BTN_SUBMIT);
+			$GLOBALS["base"]->template->set_var("ANALYTICS",ANALYTICS);
+            
+
+   			$GLOBALS["base"]->template->set_var("TITULO_SISTEMA",TITULO_SISTEMA);
+            $GLOBALS["base"]->template->set_var('email' ,$email);      
+            $GLOBALS["base"]->template->set_var('ABS_LINK' ,ABS_LINK);
+            $GLOBALS["base"]->template->set_var('msg' ,'');
+			
+            $GLOBALS["base"]->write_design_specific('login.tpl' , 'senhaenviada');
+      }
+      
+      function novasenha()
+      {
+         
+         $db = new db();
+
+
+            $key = $_REQUEST["id"];
+            $email = $_REQUEST["subid"];
+
+            $sql = "SELECT COUNT(id) AS total, nome FROM usuarios WHERE email = '".$email."' AND temp_key = '".$key."' ";
+            $db->query($sql,__LINE__,__FILE__);
+            $db->next_record();
+            if($db->f("total") > 0)
+            {
+               
+               $nome = $db->f("nome");
+               
+               $novaSenha = substr(md5(md5(time()).rand(6,9)),0,10);
+               
+               $sql = "UPDATE usuarios SET senha = MD5('".$email."'), temp_key = ''  WHERE temp_key = '".$key."' AND email = '".$email."' LIMIT 1";
+               $db->query($sql,__LINE__,__FILE__);
+               $db->next_record();
+               
+               $msg = "Ol&aacute;, ".$nome.", sua senha foi redefinida com sucesso.<br>";
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= "Nova senha: ".$novaSenha;
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= "Caso n&atilde;o tenha solicitado redefinir sua senha, desconsidere este e-mail e altere a sua senha no seu perfil.";
+               $msg .= "<br>";
+               $msg .= "Atenciosamente,<br>Equipe ".TITULO_SISTEMA."";
+               $msg .= "<br>";
+               $msg .= "Copyright 2020 - ".date("Y")." ".TITULO_SISTEMA."";
+               $msg .= "<br>";
+               $msg .= "<br>";
+               $msg .= ABS_LINK;
+
+
+               $subject = "Sua senha foi redefinida com sucesso - ".TITULO_SISTEMA." ";
+
+               email($email, $subject, $msg);
+               
+            }
+
+
+
+            $GLOBALS["base"]->template->set_var('msg_error' , '');
+			$GLOBALS["base"]->template->set_var("alertaDisplay",$alertaDisplay);
+
+         $GLOBALS["base"]->template->set_var('ABS_LINK' ,ABS_LINK);
+			$GLOBALS["base"]->template->set_var("TX_ENTRAR",TX_ENTRAR);
+			$GLOBALS["base"]->template->set_var("TX_LEMBRAR",TX_LEMBRAR);
+			$GLOBALS["base"]->template->set_var("TX_LOGIN",TX_LOGIN);
+			$GLOBALS["base"]->template->set_var("TX_ESQUECEU_SENHA",TX_ESQUECEU_SENHA);
+			$GLOBALS["base"]->template->set_var("TX_ACESSE_USANDO",TX_ACESSE_USANDO);
+			$GLOBALS["base"]->template->set_var("TX_AINDA_NAO_POSSUO_CONTA",TX_AINDA_NAO_POSSUO_CONTA);
+			$GLOBALS["base"]->template->set_var("TX_REDEFINIR_SENHA",TX_REDEFINIR_SENHA);
+			$GLOBALS["base"]->template->set_var("TX_VOLTAR",TX_VOLTAR);
+			$GLOBALS["base"]->template->set_var("TX_ESQUECEU_A_SENHA",TX_ESQUECEU_A_SENHA);
+			$GLOBALS["base"]->template->set_var("TITULO_SISTEMA",TITULO_SISTEMA);
+			$GLOBALS["base"]->template->set_var("TX_CRIAR_NOVA_CONTA",TX_CRIAR_NOVA_CONTA);
+			$GLOBALS["base"]->template->set_var("TX_ENTRE_INFORMACOES",TX_ENTRE_INFORMACOES);
+			$GLOBALS["base"]->template->set_var("BTN_SUBMIT",BTN_SUBMIT);
+			$GLOBALS["base"]->template->set_var("ANALYTICS",ANALYTICS);
+
+            $GLOBALS["base"]->template->set_var('email' ,$email);      
+            $GLOBALS["base"]->template->set_var('ABS_LINK' ,ABS_LINK);
+            $GLOBALS["base"]->template->set_var('msg' ,'');
+			
+            $GLOBALS["base"]->write_design_specific('login.tpl' , 'novasenha');
+      }
+  
+   
 }
 
 ?>
