@@ -661,6 +661,50 @@ class home
 		$GLOBALS["base"]->template->set_var('module_busca', $_REQUEST['module']);
 		$GLOBALS["base"]->write_design_specific('home.tpl', 'cabecalho_deslogado');
 	}
+   
+   
+function zip($files)
+{
+   /*
+   $files = array();
+   
+         for($i = 0; $i < count($arquivos); $i++)
+         {
+            array_push($files, $arquivos[$i][0]);
+         }
+         */
+   
+         # create new zip object
+         $zip = new ZipArchive();
+
+         # create a temp file & open it
+         $tmp_file = tempnam('.', '');
+         $zip->open($tmp_file, ZipArchive::CREATE);
+
+         # loop through each file
+         foreach ($files as $file) {
+             # download file
+             $download_file = file_get_contents($file);
+
+             #add it to the zip
+             $zip->addFromString(basename($file), $download_file);
+         }
+
+         # close zip
+         $zip->close();
+
+         $nomearquivo = "Documentos";
+                 
+         # send the file to the browser as a download
+         header('Content-disposition: attachment; filename="'.$nomearquivo.'.zip"');
+         header('Content-type: application/zip');
+         readfile($tmp_file);
+         unlink($tmp_file);
+   
+         
+         
+}
+   
 }
 
 ?>
