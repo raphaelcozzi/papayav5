@@ -1,32 +1,18 @@
 RewriteEngine On
-php_value allow_url_fopen On
+
+#aqui criamos uma condi��o para que os arquivos sejam ignorados nas regras abaixo
+    RewriteCond %{REQUEST_FILENAME} !-f
+  #aqui criamos uma condi��o para que diret�rios sejam ignorados nas regras abaixo
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([a-z]+)\/([a-z]+)\/([0-9-a-z]+)\/([0-9-a-z]+)$ index.php?module=$1&method=$2&id=$3&subid=$4 [NC,L]
+RewriteRule ^([a-z]+)\/([a-z]+)\/([0-9-a-z]+)$ index.php?module=$1&method=$2&id=$3 [NC,L]
+RewriteRule ^([a-z]+)\/([a-z]+)$ index.php?module=$1&method=$2 [NC,L]
 
 
-RewriteCond %{HTTPS} !=on
-RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
-RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[0-9a-zA-Z_-]+$
-RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
-RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Quando na URL � chamado s� um parametro (/livros, /contato) carrega por padr�o o m�todo main de toda classe
+RewriteRule ^([a-z]+)\/?$ index.php?module=$1&method=main [NC,L]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[0-9a-zA-Z_-]+$
-RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
-RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
-RewriteRule ^(.*)$ index.php?pg=$1
 
-<FilesMatch ".(eot|ttf|otf|woff)">
-	Header set Access-Control-Allow-Origin "*"
-</FilesMatch>
-
-#AddType application/x-httpd-php5 .php
-#Action php5-cgi-script /cgi-bin/php-cgi
-#AddHandler php5-cgi-script .php
-
-# php -- BEGIN cPanel-generated handler, do not edit
-# Defina o pacote “ea-php56” como a linguagem padrão de programação “PHP”.
-<IfModule mime_module>
-  AddHandler application/x-httpd-ea-php56 .php .php5 .phtml
-</IfModule>
-# php -- END cPanel-generated handler, do not edit
+# Quando acessar diretamente sem passar par�metros, carrega a p�gina inicial
+RewriteRule ^$ index.php?module=home&method=main [QSA,L,NC]
