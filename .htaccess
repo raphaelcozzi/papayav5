@@ -1,4 +1,4 @@
-RewriteEngine On
+﻿RewriteEngine On
 
 #aqui criamos uma condi��o para que os arquivos sejam ignorados nas regras abaixo
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -16,3 +16,4 @@ RewriteRule ^([a-z]+)\/?$ index.php?module=$1&method=main [NC,L]
 
 # Quando acessar diretamente sem passar par�metros, carrega a p�gina inicial
 RewriteRule ^$ index.php?module=home&method=main [QSA,L,NC]
+

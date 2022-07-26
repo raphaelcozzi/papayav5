@@ -4,9 +4,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
+error_reporting(E_ERROR);
 /* CONFIGURAÇÕES DE BANCO DE DADOS */
 
-$baseUrl = "/dev/papayav5/";
+$baseUrl = "/papayav5/";
+define("BASE_URL",$baseUrl);
+define("SESSION_KEY",'43628bbbb8613ac94fd61bd46aab5a45314s');
 
 $host = "localhost"; // servidor
 $user = "root"; // usuario

@@ -9,8 +9,8 @@ class ComposerStaticInitdfae335c7dd631c73209f3480ed92f7f
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '9c67151ae59aff4788964ce8eb2a0f43' => __DIR__ . '/..' . '/clue/stream-filter/src/functions_include.php',
-        'da253f61703e9c22a5a34f228526f05a' => __DIR__ . '/..' . '/wixel/gump/gump.class.php',
         '8cff32064859f4559445b89279f3199c' => __DIR__ . '/..' . '/php-http/message/src/filters.php',
+        'da253f61703e9c22a5a34f228526f05a' => __DIR__ . '/..' . '/wixel/gump/gump.class.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -41,6 +41,10 @@ class ComposerStaticInitdfae335c7dd631c73209f3480ed92f7f
         'M' => 
         array (
             'Monolog\\' => 8,
+        ),
+        'K' => 
+        array (
+            'Klein\\' => 6,
         ),
         'H' => 
         array (
@@ -99,6 +103,10 @@ class ComposerStaticInitdfae335c7dd631c73209f3480ed92f7f
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Klein\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/klein/klein/src/Klein',
+        ),
         'Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-http/message-factory/src',
@@ -136,6 +144,7 @@ class ComposerStaticInitdfae335c7dd631c73209f3480ed92f7f
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',

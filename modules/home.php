@@ -1,25 +1,26 @@
 <?php
 
 /*******************************************************************************************************************
-*                                                                                                                  *
-*		CLASSE PRINCIPAL QUE MONTA O CABEÇALHO E O RODAPE                                                          *
-*		TODA CLASSE QUE CONTENHA MÉTODOS QUE EXIBAM UM CONTEUDO NA TELA DEVEM SEGUIR O SEGUINTE PADRÃO:            *
-*                                                                                                                  *
-*			require_once("modules/home.php");                                                                      *
-*		                                                                                                           *
-*			class exemplo extends home                                                                             *
-*			{                                                                                                      *
-*				function main()                                                                                    *
-*				{                                                                                                  * 
-*					                                                                                               *
-*					$this->cabecalho();                                                                            *
-*					$GLOBALS["base"]->template = new template();                                                   *
-*					echo $GLOBALS["base"]->write_design_specific('exemplo.tpl' , 'exemplo');                       * 
-*					$GLOBALS["base"]->template = new template();                                                   *
-*					$this->footer();                                                                               *
-*				}                                                                                                  * 
-*			}                                                                                                      *
-*                                                                                                                  *
+*                                                                                                                  
+*		CLASSE PRINCIPAL QUE MONTA O CABEÇALHO E O RODAPE                                                          
+*		TODA CLASSE QUE CONTENHA MÉTODOS QUE EXIBAM UM CONTEUDO NA TELA DEVEM SEGUIR 
+*             O SEGUINTE PADRÃO:            
+*                                                                                                                 
+*			require_once("modules/home.php");                                                                    
+*		                                                                                                          
+*			class exemplo extends home                                                                             
+*			{                                                                                                     
+*				function main()                                                                                    
+*				{                                                                                                
+*					                                                                                              
+*					$this->cabecalho();                                                                           
+*					$GLOBALS["base"]->template = new template();                                                   
+*					echo $GLOBALS["base"]->write_design_specific('exemplo.tpl' , 'exemplo');                      
+*					$GLOBALS["base"]->template = new template();                                                
+*					$this->footer();                                                                               
+*				}                                                                                                  
+*			}                                                                                                    
+*                                                                                                              
 ********************************************************************************************************************/
 require "vendor/autoload.php";
 
@@ -53,8 +54,28 @@ class home
 	function cabecalho()
 	{
 		/* Monta o cabeÃ§alho que serÃ¡ comum em todas as pÃ¡ginas do admin */ 
-												@session_start();
+		@session_start();
 		$db = new db();
+      
+         if(LOADING_BAR == 1)
+            {
+               ob_start();
+               echo '<style type="text/css">
+                  .overover
+                  {
+                     width:100%;
+                     height:100%;
+                     background-image:url(images/ajax-loader.gif);
+                     background-position:center;
+                     background-repeat:no-repeat;
+                     background-color:#FFF;	
+                  }
+                  </style>
+                  <div id="overover" class="overover"></div>';
+
+                  ob_flush();
+            }
+
 
 		$sql = "SELECT id FROM usuarios WHERE id = " . $_SESSION['boss'] . " ";
 		$db->query($sql, __LINE__, __FILE__);
@@ -177,11 +198,7 @@ class home
 	}
 
 	/* MÉTODOS DE TRATAMENTO DE MOEDAS */
-							/* MÉTODOS DE TRATAMENTO DE MOEDAS */
-							/* MÉTODOS DE TRATAMENTO DE MOEDAS */
-							/* MÉTODOS DE TRATAMENTO DE MOEDAS */
-		
-							function decimal_to_brasil_real($valor)
+	function decimal_to_brasil_real($valor)
 	{
 		/* ESPERA RECEBER O FORMATO 1000.00 
 				
@@ -189,7 +206,7 @@ class home
 			
 			*/
 
-													$valor = number_format($valor, 2);
+            $valor = number_format($valor, 2);
 		$valor = str_replace(",", ".", $valor);
 		$valor = substr($valor, 0, (strlen($valor) - 3)) . str_replace(".", ",", substr($valor, (strlen($valor) - 3), 1)) . substr($valor, (strlen($valor) - 2), 2);
 
@@ -200,11 +217,10 @@ class home
 	{
 		/*
 				ESPERA RECEBER O FORMATO 1.000,00
-				
 				Converte valor em real do Brasil para decimal (15,2) com duas casas decimais
 			*/
 			
-													$v = str_replace(".", "", $valor);
+		$v = str_replace(".", "", $valor);
 		$v = str_replace(",", ".", $v);
 
 		return $v;
@@ -214,7 +230,7 @@ class home
 	{
 		/* $data DD/MM/YYYY */	
 			
-													$ano =  substr("$data", 6, 4);
+		$ano =  substr("$data", 6, 4);
 		$mes =  substr("$data", 4, 2);
 		$dia =  substr("$data", 0, 2);
 
@@ -288,7 +304,7 @@ class home
 	function monta_menu()
 	{
 		/* Monta o menu superior de acordo com as permissÃµes do usuÃ¡rio que estÃ¡ logado */	
-												@session_start();
+		@session_start();
 
 		$db = new db();
 		$db2 = new db();
@@ -700,11 +716,9 @@ function zip($files)
          header('Content-type: application/zip');
          readfile($tmp_file);
          unlink($tmp_file);
-   
-         
          
 }
-   
+
 }
 
 ?>
