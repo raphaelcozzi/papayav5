@@ -283,7 +283,7 @@ class login
 
 		session_destroy();
 
-		header("Location: " . ABS_LINK . "/home");
+		header("Location: " . ABS_LINK . "login");
 	}
 
 	function check_login()
