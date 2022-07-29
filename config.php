@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 */
 error_reporting(E_ERROR);
 
-$connection_type = 1; // 1 - Database, 2 - LDAP
+define("CONNECTION_TYPE",1); // 1 - Database, 2 - LDAP
 
 
 $baseUrl = "/papayav5/";
@@ -25,13 +25,8 @@ $dbdriver = "mysql"; // tipo do banco mysql
 /* CONFIGURAÇÕES DE LDAP*/ 
 
 // Habilitar  ;extension=php_ldap.dll no php.ini
-
 $ldap_server = "";
-$ldap_dominio = "@dominio"; //Dominio local ou global
-$ldap_user = "usuario".$dominio;
-$ldap_porta = "389";
-$ldap_pass   = "";
-$ldapcon = ldap_connect($ldap_server, $ldap_porta) or die("Could not connect to LDAP server.");
+
 
 
 // Chave para acesso externo ao Json das imagens

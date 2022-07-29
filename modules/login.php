@@ -92,7 +92,7 @@ class login
 		*	Método principal de login ao sistema
 		*/
 
-												$db = new db();
+		$db = new db();
 		$db2 = new db();
 		$db3 = new db();
 
@@ -144,17 +144,40 @@ class login
 			$GLOBALS["base"]->write_design_specific('login.tpl', 'login');
 			die();
 		}
+      
 
 		if ($_POST['login'] && $_POST['senha']) {
-			$sql = "SELECT * FROM usuarios
-					WHERE ( email = '" . $login . "' AND senha = MD5('" . $senha . "')) AND (status = 1) limit 1";
+         
+                  if(CONNECTION_TYPE == 2)
+                  {
+                       $passok = 0;
 
-			$db->query($sql, __LINE__, __FILE__);
-			$db->next_record();
+                     $ldap = ldap_connect($ldap_server);
+                     if ($bind = ldap_bind($ldap, $_REQUEST['email'], $_POST['senha'])) {
+                       $passok = 1;
+                     } else {
+                       die("Erro ao autenticar");
+                     }
 
-			if ($db->num_rows() > 0) {
+                  }
+                  else
+                  {
+
+                     $sql = "SELECT * FROM usuarios
+                           WHERE ( email = '" . $login . "' AND senha = MD5('" . $senha . "')) AND (status = 1) limit 1";
+
+                     $db->query($sql, __LINE__, __FILE__);
+                     $db->next_record();
+                     if($db->num_rows() > 0)
+                        $passok = 1;
+
+
+                  }
+
+
+			if ($passok == 1) {
 				/* Guarda em sessão todos os parâmetros utéis do usuário */
-																									$_SESSION['logged'] = "43628bbbb8613ac94fd61bd46aab5a45314s";
+				$_SESSION['logged'] = "43628bbbb8613ac94fd61bd46aab5a45314s";
 				$_SESSION['id'] = $db->f("id");
 				$_SESSION['nome'] = $db->f("nome");
 				$_SESSION['email'] = $db->f("email");
@@ -186,7 +209,7 @@ class login
 						$saudacao = "Boa noite";
                            */
             
-																				$sql2 = "SELECT id_grupo FROM usuarios_grupos WHERE id_usuario = " . $db->f("id") . " ";
+				$sql2 = "SELECT id_grupo FROM usuarios_grupos WHERE id_usuario = " . $db->f("id") . " ";
 				$db2->query($sql2, __LINE__, __FILE__);
 				$db2->next_record();
 				if ($db2->f("id_grupo") == 1 || $db2->f("id_grupo") == 2) {
